@@ -27,16 +27,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // CSRF korumasını devre dışı bırak
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/signup", "/auth/login", "/h2-console/**").permitAll() // No Auth gereken yollar
-                        .anyRequest().authenticated() // Diğer tüm yollar için Basic Auth zorunlu
+                        .requestMatchers("/auth/signup", "/auth/login", "/h2-console/**").permitAll() // Kayıt ve giriş serbest
+                        .anyRequest().permitAll() // 🔹 Diğer endpointleri de test için serbest bırak
                 )
-                .httpBasic(); // Basic Auth etkinleştir
+                .httpBasic(httpSecurityHttpBasicConfigurer -> {});
 
-        // H2 Console'un çalışabilmesi için FrameOptions'u devre dışı bırak
-        http.headers(headers -> headers.frameOptions().disable());
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())); // H2 Console için
 
         return http.build();
     }
+
 
 
     @Bean
@@ -47,12 +47,9 @@ public class SecurityConfig {
         return new ProviderManager(authProvider);
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         // Test için NoOp (şifreleri açık metin olarak tutar, gerçek projelerde kullanılmaz)
         return NoOpPasswordEncoder.getInstance();
     }
-
-
 }

@@ -1,13 +1,13 @@
 package com.example.budgetmanager.controller;
 
 import com.example.budgetmanager.dto.ExpenseCategoryDTO;
-import com.example.budgetmanager.model.ExpenseCategory;
 import com.example.budgetmanager.service.ExpenseCategoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 @RestController
 @RequestMapping("/expense-categories")
 public class ExpenseCategoryController {
@@ -19,25 +19,29 @@ public class ExpenseCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExpenseCategoryDTO>> getAllExpenseCategories() {
-        return ResponseEntity.ok(expenseCategoryService.getAllExpenseCategories());
+    public ResponseEntity<List<ExpenseCategoryDTO>> getAllExpenseCategories(Authentication authentication) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(expenseCategoryService.getAllExpenseCategories(username));
     }
 
     @PostMapping
-    public ResponseEntity<String> addExpenseCategory(@RequestBody ExpenseCategoryDTO expenseCategoryDTO) {
-        expenseCategoryService.addExpenseCategory(expenseCategoryDTO);
+    public ResponseEntity<String> addExpenseCategory(@RequestBody ExpenseCategoryDTO expenseCategoryDTO, Authentication authentication) {
+        String username = authentication.getName();
+        expenseCategoryService.addExpenseCategory(expenseCategoryDTO, username);
         return ResponseEntity.ok("Expense category added successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateExpenseCategory(@PathVariable Long id, @RequestBody ExpenseCategoryDTO expenseCategoryDTO) {
-        expenseCategoryService.updateExpenseCategory(id, expenseCategoryDTO);
+    public ResponseEntity<String> updateExpenseCategory(@PathVariable Long id, @RequestBody ExpenseCategoryDTO expenseCategoryDTO, Authentication authentication) {
+        String username = authentication.getName();
+        expenseCategoryService.updateExpenseCategory(id, expenseCategoryDTO, username);
         return ResponseEntity.ok("Expense category updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteExpenseCategory(@PathVariable Long id) {
-        expenseCategoryService.deleteExpenseCategory(id);
+    public ResponseEntity<String> deleteExpenseCategory(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        expenseCategoryService.deleteExpenseCategory(id, username);
         return ResponseEntity.ok("Expense category deleted successfully");
     }
 }

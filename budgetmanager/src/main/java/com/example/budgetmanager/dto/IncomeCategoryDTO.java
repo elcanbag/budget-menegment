@@ -1,13 +1,16 @@
 package com.example.budgetmanager.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class IncomeCategoryDTO {
     private Long id;
     private String name;
+
+    public IncomeCategoryDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

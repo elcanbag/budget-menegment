@@ -14,6 +14,9 @@ public class ExpenseCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 }

@@ -20,8 +20,14 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserDTO userDTO) {
-        String result = userService.registerUser(userDTO);
-        return ResponseEntity.ok(result);
+        Optional<User> existingUser = userService.findByUsername(userDTO.getUsername());
+
+        if (existingUser.isPresent()) {
+            return ResponseEntity.status(409).body("User already exists!"); // Kullanıcı zaten varsa hata döndür
+        }
+
+        User newUser = userService.registerUser(userDTO);
+        return ResponseEntity.ok("User registered successfully with username: " + newUser.getUsername());
     }
 
     @PostMapping("/login")

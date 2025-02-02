@@ -1,13 +1,11 @@
 package com.example.budgetmanager.controller;
 
 import com.example.budgetmanager.dto.IncomeCategoryDTO;
-import com.example.budgetmanager.model.IncomeCategory;
 import com.example.budgetmanager.service.IncomeCategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/income-categories")
@@ -20,8 +18,8 @@ public class IncomeCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<IncomeCategoryDTO>> getAllIncomeCategories() {
-        return ResponseEntity.ok(incomeCategoryService.getAllIncomeCategories());
+    public ResponseEntity<List<IncomeCategoryDTO>> getAllIncomeCategoriesForUser() {
+        return ResponseEntity.ok(incomeCategoryService.getAllIncomeCategoriesForUser());
     }
 
     @PostMapping
