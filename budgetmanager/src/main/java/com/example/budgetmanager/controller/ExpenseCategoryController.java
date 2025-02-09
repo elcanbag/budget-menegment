@@ -44,4 +44,11 @@ public class ExpenseCategoryController {
         expenseCategoryService.deleteExpenseCategory(id, username);
         return ResponseEntity.ok("Expense category deleted successfully");
     }
+
+
+    @GetMapping("/{parentId}/subcategories")
+    public ResponseEntity<List<ExpenseCategoryDTO>> getSubcategories(@PathVariable Long parentId) {
+        return ResponseEntity.ok(expenseCategoryService.getSubcategories(parentId));
+    }
+
 }

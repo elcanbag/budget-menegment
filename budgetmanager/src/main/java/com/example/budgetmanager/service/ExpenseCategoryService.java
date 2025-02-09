@@ -30,15 +30,33 @@ public class ExpenseCategoryService {
                 .collect(Collectors.toList());
     }
 
-    public void addExpenseCategory(ExpenseCategoryDTO expenseCategoryDTO, String username) {
+    public void addExpenseCategory(ExpenseCategoryDTO dto, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ExpenseCategory entity = new ExpenseCategory();
-        entity.setName(expenseCategoryDTO.getName());
-        entity.setUserId(user.getId());
-        expenseCategoryRepository.save(entity);
+        ExpenseCategory category = new ExpenseCategory();
+        category.setName(dto.getName());
+        category.setUserId(user.getId());
+
+        if (dto.getParentId() != null) {
+            ExpenseCategory parentCategory = expenseCategoryRepository.findById(dto.getParentId())
+                    .orElseThrow(() -> new RuntimeException("Parent category not found"));
+            category.setParentCategory(parentCategory);
+        }
+
+        expenseCategoryRepository.save(category);
     }
+
+    public List<ExpenseCategoryDTO> getSubcategories(Long parentId) {
+        ExpenseCategory parentCategory = expenseCategoryRepository.findById(parentId)
+                .orElseThrow(() -> new RuntimeException("Parent category not found"));
+
+        return expenseCategoryRepository.findByParentCategory(parentCategory)
+                .stream()
+                .map(category -> new ExpenseCategoryDTO(category.getId(), category.getName(), parentId))
+                .collect(Collectors.toList());
+    }
+
 
     public void updateExpenseCategory(Long id, ExpenseCategoryDTO expenseCategoryDTO, String username) {
         User user = userRepository.findByUsername(username)

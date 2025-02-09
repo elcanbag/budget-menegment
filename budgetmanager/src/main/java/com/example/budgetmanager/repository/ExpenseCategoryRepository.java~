@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface ExpenseCategoryRepository extends JpaRepository<ExpenseCategory, Long> {
     List<ExpenseCategory> findByUserId(Long userId);
-    List<ExpenseCategory> findByParentCategory(ExpenseCategory parentCategory);
 }

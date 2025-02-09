@@ -18,7 +18,7 @@ public class ExpenseCategory {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent_id") // Alt kategori için parent referansı
     private ExpenseCategory parentCategory;
 
     @Column(name = "user_id", nullable = false)
