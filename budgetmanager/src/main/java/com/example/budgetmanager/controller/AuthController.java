@@ -1,5 +1,6 @@
 package com.example.budgetmanager.controller;
 
+import com.example.budgetmanager.dto.LoginDTO;
 import com.example.budgetmanager.dto.UserDTO;
 import com.example.budgetmanager.model.User;
 import com.example.budgetmanager.service.UserService;
@@ -31,10 +32,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserDTO userDTO) {
-        Optional<User> user = userService.findByUsername(userDTO.getUsername());
+    public ResponseEntity<String> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
+        Optional<User> user = userService.findByUsername(loginDTO.getUsername());
 
-        if (user.isPresent() && user.get().getPassword().equals(userDTO.getPassword())) {
+        if (user.isPresent() && user.get().getPassword().equals(loginDTO.getPassword())) {
             return ResponseEntity.ok("Login successful!");
         } else {
             return ResponseEntity.status(401).body("Invalid username or password!");
