@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ExpenseRecordDTO {
-    private Long categoryId;
+    private Long id;
     private Double amount;
-    private LocalDateTime date;
+    private String description;
+    private Long categoryId;
+    private Long subCategoryId;
 }

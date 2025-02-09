@@ -27,17 +27,17 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // ✅ CORS Filtresi (Frontend ile sorunsuz çalışmasını sağlar)
+
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:5500")); // İzin verilen origin'ler
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // HTTP metodları
-        config.setAllowedHeaders(List.of("Content-Type", "Authorization")); // İzin verilen başlıklar
-        config.setAllowCredentials(true); // Kimlik doğrulama bilgilerine izin ver
+        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:5500"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Tüm yollar için CORS yapılandırması uygula
+        source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter(source);
     }
@@ -45,7 +45,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // ❌ CSRF'yi kapat
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:5500"));
@@ -55,12 +55,12 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/signup", "/auth/login", "/h2-console/**").permitAll() // 🚀 Kayıt, giriş ve H2 serbest
+                        .requestMatchers("/auth/signup", "/auth/login", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(httpSecurityHttpBasicConfigurer -> {}); // HTTP Basic Auth etkin
+                .httpBasic(httpSecurityHttpBasicConfigurer -> {});
 
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())); // H2 Console için gerekli
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }
@@ -69,12 +69,12 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance()); // Şifre düz metin olarak saklanıyor (Güvenlik için değiştirmelisin)
+        authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         return new ProviderManager(authProvider);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // ❗ Test için şifreleme yok, gerçekte kullanma!
+        return NoOpPasswordEncoder.getInstance();
     }
 }

@@ -19,5 +19,5 @@ public class IncomeCategory {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // User nesnesi ile ilişkilendirildi
+    private User user;
 }

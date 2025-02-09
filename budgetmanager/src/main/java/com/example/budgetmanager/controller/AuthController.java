@@ -23,7 +23,7 @@ public class AuthController {
         Optional<User> existingUser = userService.findByUsername(userDTO.getUsername());
 
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(409).body("User already exists!"); // Kullanıcı zaten varsa hata döndür
+            return ResponseEntity.status(409).body("User already exists!");
         }
 
         User newUser = userService.registerUser(userDTO);

@@ -22,33 +22,33 @@ public class IncomeRecordService {
         this.userRepository = userRepository;
     }
 
-    // 🔹 Kimlik doğrulamaya göre kullanıcıyı al
+
     private User getAuthenticatedUser(Authentication authentication) {
         return userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    // 🔹 Kullanıcının tüm gelir kayıtlarını getir
+
     public List<IncomeRecord> getRecordsByAuthenticatedUser(Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         return incomeRecordRepository.findByUser(user);
     }
 
-    // 🔹 Kullanıcının belirli bir gelir kaydını getir
+
     public IncomeRecord getRecordByIdAndAuthenticatedUser(Long id, Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         return incomeRecordRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new RuntimeException("Record not found or access denied"));
     }
 
-    // 🔹 Gelir kaydı ekle
+
     public IncomeRecord addRecord(IncomeRecord incomeRecord, Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         incomeRecord.setUser(user);
         return incomeRecordRepository.save(incomeRecord);
     }
 
-    // 🔹 Gelir kaydını güncelle
+
     public IncomeRecord updateRecord(Long id, IncomeRecord updatedRecord, Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         IncomeRecord record = incomeRecordRepository.findByIdAndUser(id, user)
@@ -61,7 +61,7 @@ public class IncomeRecordService {
         return incomeRecordRepository.save(record);
     }
 
-    // 🔹 Gelir kaydını sil
+
     public void deleteRecord(Long id, Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         IncomeRecord record = incomeRecordRepository.findByIdAndUser(id, user)

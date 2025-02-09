@@ -3,7 +3,6 @@ package com.example.budgetmanager.controller;
 import com.example.budgetmanager.dto.ExpenseRecordDTO;
 import com.example.budgetmanager.model.ExpenseRecord;
 import com.example.budgetmanager.service.ExpenseRecordService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +12,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/expense-records")
-@RequiredArgsConstructor
 public class ExpenseRecordController {
 
     private final ExpenseRecordService expenseRecordService;
+
+    public ExpenseRecordController(ExpenseRecordService expenseRecordService) {
+        this.expenseRecordService = expenseRecordService;
+    }
 
     @GetMapping
     public ResponseEntity<List<ExpenseRecord>> getUserExpenseRecords() {

@@ -36,5 +36,5 @@ public class ExpenseRecord {
     private User user;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime date; // Tarih eklendi
 }

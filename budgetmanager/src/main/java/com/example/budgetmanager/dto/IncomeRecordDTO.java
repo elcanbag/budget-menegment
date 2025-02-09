@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Data
 public class IncomeRecordDTO {
     private Long userId;
-    private Long categoryId; // Kategori ID ekleniyor
+    private Long categoryId;
     private Double amount;
     private LocalDateTime date;
 }

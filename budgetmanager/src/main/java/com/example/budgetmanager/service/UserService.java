@@ -23,7 +23,7 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());  // Şifreleme yok, düz metin saklanıyor.
+        user.setPassword(userDTO.getPassword());
         user.setFullName(userDTO.getFullName());
 
         return userRepository.save(user);
@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
             User user = existingUser.get();
             user.setEmail(userDTO.getEmail());
             if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-                user.setPassword(userDTO.getPassword()); // Şifre direkt olarak saklanıyor
+                user.setPassword(userDTO.getPassword());
             }
             return userRepository.save(user);
         }
