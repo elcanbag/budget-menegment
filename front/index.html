@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Budget App</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+  <div id="app" class="max-w-6xl mx-auto p-4">
+    <!-- Global Error Message -->
+    <div id="globalError" class="mb-4 text-red-600"></div>
+    
+    <!-- Login Section -->
+    <div id="loginSection" class="max-w-md mx-auto bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-bold mb-4">Login</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label for="username" class="block text-gray-700">Username</label>
+          <input type="text" id="username" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="password" class="block text-gray-700">Password</label>
+          <input type="password" id="password" class="w-full border rounded p-2" required />
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="rememberMe" class="mr-2" />
+          <label for="rememberMe" class="text-gray-700">Remember Me</label>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded">Login</button>
+      </form>
+      <p class="mt-4 text-center">
+        Don't have an account? <a href="#" id="showRegister" class="text-blue-500">Register</a>
+      </p>
+      <div id="loginError" class="text-red-500 mt-2"></div>
+    </div>
+
+    <!-- Registration Section -->
+    <div id="registerSection" class="max-w-md mx-auto bg-white p-6 rounded shadow hidden">
+      <h2 class="text-xl font-bold mb-4">Register</h2>
+      <form id="registerForm" class="space-y-4">
+        <div>
+          <label for="fullName" class="block text-gray-700">Full Name</label>
+          <input type="text" id="fullName" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="regUsername" class="block text-gray-700">Username</label>
+          <input type="text" id="regUsername" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="email" class="block text-gray-700">Email</label>
+          <input type="email" id="email" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="regPassword" class="block text-gray-700">Password</label>
+          <input type="password" id="regPassword" class="w-full border rounded p-2" required />
+        </div>
+        <button type="submit" class="w-full bg-green-500 text-white p-2 rounded">Register</button>
+      </form>
+      <p class="mt-4 text-center">
+        Already have an account? <a href="#" id="showLogin" class="text-blue-500">Login</a>
+      </p>
+      <div id="registerError" class="text-red-500 mt-2"></div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="hidden">
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Dashboard</h2>
+        <button id="logout" class="bg-red-500 text-white px-4 py-2 rounded mt-4 sm:mt-0">Logout</button>
+      </div>
+      <div id="userProfile" class="mb-4">
+        <!-- User profile information can be shown here -->
+      </div>
+      <div id="content" class="space-y-8">
+        <!-- Categories Section -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Income Categories</h3>
+          <!-- Form to add a new income category -->
+          <form id="incomeCategoryForm" class="mb-4 flex gap-2">
+            <input type="text" id="incomeCategoryName" placeholder="New Income Category" class="border rounded p-2 flex-1" required />
+            <button type="submit" class="bg-green-500 text-white p-2 rounded">Add</button>
+          </form>
+          <ul id="incomeCategories" class="mb-4 border p-2">
+            <!-- Income categories will be listed here -->
+          </ul>
+
+          <h3 class="text-xl font-bold mb-2">Expense Categories</h3>
+          <!-- Form to add a new expense category -->
+          <form id="expenseCategoryForm" class="mb-4 flex gap-2">
+            <input type="text" id="expenseCategoryName" placeholder="New Expense Category" class="border rounded p-2 flex-1" required />
+            <button type="submit" class="bg-green-500 text-white p-2 rounded">Add</button>
+          </form>
+          <ul id="expenseCategories" class="mb-4 border p-2">
+            <!-- Expense categories will be listed here -->
+          </ul>
+        </div>
+
+        <!-- Income Records Section -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Income Records</h3>
+          <!-- Form to add a new income record -->
+          <form id="incomeRecordForm" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <input type="number" step="0.01" id="incomeAmount" placeholder="Amount" class="border rounded p-2" required />
+            <!-- Dropdown for income category selection -->
+            <select id="incomeCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Category</option>
+            </select>
+            <input type="datetime-local" id="incomeDate" class="border rounded p-2" required />
+            <button type="submit" class="md:col-span-3 bg-green-500 text-white p-2 rounded">Add Income Record</button>
+          </form>
+          <div id="incomeRecords" class="border p-4">
+            <!-- Income records will be listed here with edit and delete buttons -->
+          </div>
+        </div>
+
+        <!-- Expense Subcategories and Expense Records Section -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Expense Subcategories</h3>
+          <!-- Form to add a new expense subcategory -->
+          <form id="expenseSubcategoryForm" class="mb-4 flex gap-2">
+            <input type="text" id="expenseSubcategoryName" placeholder="New Expense Subcategory" class="border rounded p-2 flex-1" required />
+            <!-- Dropdown for parent expense category selection -->
+            <select id="parentExpenseCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Parent Category</option>
+            </select>
+            <button type="submit" class="bg-green-500 text-white p-2 rounded">Add</button>
+          </form>
+          <div id="expenseSubcategories" class="space-y-4">
+            <!-- Expense subcategory cards will be created here with edit and delete buttons -->
+          </div>
+          <!-- Form to add a new expense record -->
+          <h3 class="text-xl font-bold mb-2">Expense Records</h3>
+          <form id="expenseRecordForm" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-2">
+            <input type="number" step="0.01" id="expenseAmount" placeholder="Amount" class="border rounded p-2" required />
+            <input type="text" id="expenseDescription" placeholder="Description" class="border rounded p-2" required />
+            <!-- Dropdown for expense category selection -->
+            <select id="expenseCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Category</option>
+            </select>
+            <!-- Dropdown for expense subcategory selection -->
+            <select id="expenseSubcategorySelect" class="border rounded p-2" required>
+              <option value="">Select Subcategory</option>
+            </select>
+            <input type="datetime-local" id="expenseDate" class="border rounded p-2" required />
+            <button type="submit" class="md:col-span-4 bg-green-500 text-white p-2 rounded">Add Expense Record</button>
+          </form>
+          <div id="expenseRecords" class="border p-4">
+            <!-- Expense records will be listed here with edit and delete buttons -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const baseUrl = 'http://localhost:8080';
+
+    // SVG icons for edit and delete
+    const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7 21H3v-4L16.732 3.732z" />
+    </svg>`;
+    const xIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>`;
+
+    // Show global error message in the header
+    function showGlobalError(message) {
+      const globalErrorEl = document.getElementById('globalError');
+      globalErrorEl.textContent = message;
+      console.error(message);
+    }
+
+    // Navigation between login and registration forms
+    document.getElementById('showRegister').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('registerSection').classList.remove('hidden');
+      document.getElementById('globalError').textContent = '';
+    });
+    document.getElementById('showLogin').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('registerSection').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('globalError').textContent = '';
+    });
+
+    // Login process with "Remember Me" functionality
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+      try {
+        const res = await fetch(`${baseUrl}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (!res.ok) throw new Error('Login failed');
+        const contentType = res.headers.get('content-type');
+        let data = contentType && contentType.includes('application/json') ? await res.json() : await res.text();
+        // Save credentials if "Remember Me" is checked
+        if (rememberMe) {
+          localStorage.setItem('username', username);
+          localStorage.setItem('password', password);
+        } else {
+          localStorage.removeItem('username');
+          localStorage.removeItem('password');
+        }
+        showDashboard();
+      } catch (err) {
+        document.getElementById('loginError').textContent = err.message;
+        showGlobalError(err.message);
+      }
+    });
+
+    // Registration process
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById('fullName').value;
+      const username = document.getElementById('regUsername').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('regPassword').value;
+      try {
+        const res = await fetch(`${baseUrl}/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, username, email, password })
+        });
+        if (!res.ok) throw new Error('Registration failed');
+        document.getElementById('registerError').textContent = 'Registration successful! Please log in.';
+        setTimeout(() => {
+          document.getElementById('registerSection').classList.add('hidden');
+          document.getElementById('loginSection').classList.remove('hidden');
+          document.getElementById('registerError').textContent = '';
+        }, 1500);
+      } catch (err) {
+        document.getElementById('registerError').textContent = err.message;
+        showGlobalError(err.message);
+      }
+    });
+
+    // Show dashboard and load all data & dropdowns
+    function showDashboard() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('registerSection').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('globalError').textContent = '';
+      loadCategories();
+      loadIncomeRecords();
+      loadExpenseSubcategories();
+      loadExpenseRecords();
+      populateIncomeCategorySelect();
+      populateExpenseCategorySelect();
+      populateExpenseSubcategorySelect();
+      populateParentExpenseCategorySelect();
+    }
+
+    // Auto-login if "Remember Me" credentials exist
+    window.addEventListener('load', () => {
+      const storedUsername = localStorage.getItem('username');
+      const storedPassword = localStorage.getItem('password');
+      if (storedUsername && storedPassword) showDashboard();
+    });
+
+    // Logout process
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+    });
+
+    // Create basic auth header
+    function getAuthHeaders() {
+      const username = localStorage.getItem('username') || '';
+      const password = localStorage.getItem('password') || '';
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(username + ':' + password)
+      };
+    }
+
+    // ---------- GET Operations ----------
+
+    // Load Income & Expense Categories
+    async function loadCategories() {
+      try {
+        // Load income categories
+        const incomeRes = await fetch(`${baseUrl}/income-categories`, { headers: getAuthHeaders() });
+        if (!incomeRes.ok) throw new Error('Failed to load income categories');
+        const incomeData = await incomeRes.json();
+        const incomeList = document.getElementById('incomeCategories');
+        incomeList.innerHTML = incomeData.length ? '' : '<li>No income categories available</li>';
+        incomeData.forEach(cat => {
+          const li = document.createElement('li');
+          li.className = 'border p-2 my-1 flex justify-between items-center';
+          li.innerHTML = `<span>${cat.name}</span>
+            <span>
+              <button onclick="editIncomeCategory(${cat.id}, '${cat.name}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteIncomeCategory(${cat.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          incomeList.appendChild(li);
+        });
+
+        // Load expense categories
+        const expenseRes = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!expenseRes.ok) throw new Error('Failed to load expense categories');
+        const expenseData = await expenseRes.json();
+        const expenseList = document.getElementById('expenseCategories');
+        expenseList.innerHTML = expenseData.length ? '' : '<li>No expense categories available</li>';
+        expenseData.forEach(cat => {
+          const li = document.createElement('li');
+          li.className = 'border p-2 my-1 flex justify-between items-center';
+          li.innerHTML = `<span>${cat.name}</span>
+            <span>
+              <button onclick="editExpenseCategory(${cat.id}, '${cat.name}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteExpenseCategory(${cat.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          expenseList.appendChild(li);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+
+    // Load Income Records
+    async function loadIncomeRecords() {
+      try {
+        const res = await fetch(`${baseUrl}/income-records`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load income records');
+        const records = await res.json();
+        const container = document.getElementById('incomeRecords');
+        container.innerHTML = records.length ? '' : '<p>No income records available</p>';
+        records.forEach(record => {
+          const div = document.createElement('div');
+          div.className = 'border-b py-2 flex justify-between items-center';
+          div.innerHTML = `<span>Amount: ${record.amount}, Category: ${record.category.name}, Date: ${new Date(record.date).toLocaleString()}</span>
+            <span>
+              <button onclick="editIncomeRecord(${record.id}, ${record.amount}, '${record.category ? record.category.id : ''}', '${record.date}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteIncomeRecord(${record.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+
+    // Load Expense Subcategories
+    async function loadExpenseSubcategories() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense subcategories');
+        const subs = await res.json();
+        const container = document.getElementById('expenseSubcategories');
+        container.innerHTML = '';
+        if (!subs.length) {
+          container.innerHTML = '<p>No expense subcategories available</p>';
+        } else {
+          subs.forEach(sub => {
+            const card = document.createElement('div');
+            card.className = 'border p-4 mb-4';
+            card.innerHTML = `
+              <h4 class="font-bold mb-2">
+                ${sub.name}
+                <button onclick="editExpenseSubcategory(${sub.id}, '${sub.name}', ${sub.parentCategory ? sub.parentCategory.id : ''})" class="text-blue-600 ml-2" title="Edit">${pencilIcon}</button>
+                <button onclick="deleteExpenseSubcategory(${sub.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+              </h4>
+              <div id="records-sub-${sub.id}" class="ml-4 text-sm text-gray-700">
+                <!-- Expense records for this subcategory -->
+              </div>`;
+            container.appendChild(card);
+          });
+        }
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+
+    // Load Expense Records and append them to both a general list and the respective subcategory card
+    async function loadExpenseRecords() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-records`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense records');
+        const records = await res.json();
+        // Clear records in each subcategory card
+        const subContainer = document.getElementById('expenseSubcategories');
+        Array.from(subContainer.children).forEach(card => {
+          const recContainer = card.querySelector('div[id^="records-sub-"]');
+          recContainer.innerHTML = '';
+        });
+        const expenseRecordsContainer = document.getElementById('expenseRecords');
+        expenseRecordsContainer.innerHTML = records.length ? '' : '<p>No expense records available</p>';
+        if (records.length) {
+          records.forEach(record => {
+            // General list entry
+            const div = document.createElement('div');
+            div.className = 'border-b py-2 flex justify-between items-center';
+            div.innerHTML = `<span>Amount: ${record.amount}, Description: ${record.description}, Date: ${new Date(record.date).toLocaleString()}</span>
+              <span>
+                <button onclick="editExpenseRecord(${record.id}, ${record.amount}, '${record.description}', ${record.category ? record.category.id : ''}, ${record.subCategory ? record.subCategory.id : ''}, '${record.date}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+                <button onclick="deleteExpenseRecord(${record.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+              </span>`;
+            expenseRecordsContainer.appendChild(div);
+            // Append record to the respective subcategory card if exists
+            if (record.subCategory && record.subCategory.id) {
+              const container = document.getElementById(`records-sub-${record.subCategory.id}`);
+              if (container) {
+                const recDiv = document.createElement('div');
+                recDiv.className = 'border-t pt-2 mt-2 flex justify-between items-center';
+                recDiv.innerHTML = `<span>Amount: ${record.amount}, Description: ${record.description}, Date: ${new Date(record.date).toLocaleString()}</span>
+                  <span>
+                    <button onclick="editExpenseRecord(${record.id}, ${record.amount}, '${record.description}', ${record.category ? record.category.id : ''}, ${record.subCategory ? record.subCategory.id : ''}, '${record.date}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+                    <button onclick="deleteExpenseRecord(${record.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+                  </span>`;
+                container.appendChild(recDiv);
+              }
+            }
+          });
+        }
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+
+    // ---------- Dropdown Population ----------
+
+    // Populate Income Category dropdown for Income Record form
+    async function populateIncomeCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/income-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load income categories for selection');
+        const cats = await res.json();
+        const select = document.getElementById('incomeCategorySelect');
+        select.innerHTML = '<option value="">Select Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Populate Expense Category dropdown for Expense Record form
+    async function populateExpenseCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense categories for selection');
+        const cats = await res.json();
+        const select = document.getElementById('expenseCategorySelect');
+        select.innerHTML = '<option value="">Select Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Populate Expense Subcategory dropdown for Expense Record form
+    async function populateExpenseSubcategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense subcategories for selection');
+        const subs = await res.json();
+        const select = document.getElementById('expenseSubcategorySelect');
+        select.innerHTML = '<option value="">Select Subcategory</option>';
+        subs.forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Populate Parent Expense Category dropdown for Expense Subcategory form
+    async function populateParentExpenseCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense categories for parent selection');
+        const cats = await res.json();
+        const select = document.getElementById('parentExpenseCategorySelect');
+        select.innerHTML = '<option value="">Select Parent Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // ---------- POST Operations ----------
+
+    document.getElementById('incomeCategoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('incomeCategoryName').value;
+      try {
+        const res = await fetch(`${baseUrl}/income-categories`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error('Failed to add income category');
+        document.getElementById('incomeCategoryName').value = '';
+        loadCategories();
+        populateIncomeCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    });
+
+    document.getElementById('expenseCategoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('expenseCategoryName').value;
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error('Failed to add expense category');
+        document.getElementById('expenseCategoryName').value = '';
+        loadCategories();
+        populateExpenseCategorySelect();
+        populateParentExpenseCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    });
+
+    document.getElementById('incomeRecordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('incomeAmount').value);
+      const categoryId = parseInt(document.getElementById('incomeCategorySelect').value);
+      const date = document.getElementById('incomeDate').value;
+      if (!categoryId) { showGlobalError('Please select an income category'); return; }
+      try {
+        const res = await fetch(`${baseUrl}/income-records`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount, category: { id: categoryId }, date })
+        });
+        if (!res.ok) throw new Error('Failed to add income record');
+        document.getElementById('incomeAmount').value = '';
+        document.getElementById('incomeDate').value = '';
+        loadIncomeRecords();
+      } catch (err) { showGlobalError(err.message); }
+    });
+
+    document.getElementById('expenseSubcategoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('expenseSubcategoryName').value;
+      const parentCategoryId = parseInt(document.getElementById('parentExpenseCategorySelect').value);
+      if (!parentCategoryId) { showGlobalError('Please select a parent expense category'); return; }
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name, parentCategoryId })
+        });
+        if (!res.ok) throw new Error('Failed to add expense subcategory');
+        document.getElementById('expenseSubcategoryName').value = '';
+        loadExpenseSubcategories();
+        populateExpenseSubcategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    });
+
+    document.getElementById('expenseRecordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('expenseAmount').value);
+      const description = document.getElementById('expenseDescription').value;
+      const categoryId = parseInt(document.getElementById('expenseCategorySelect').value);
+      const subCategoryId = parseInt(document.getElementById('expenseSubcategorySelect').value);
+      const date = document.getElementById('expenseDate').value;
+      if (!categoryId || !subCategoryId) { showGlobalError('Please select both expense category and subcategory'); return; }
+      try {
+        const res = await fetch(`${baseUrl}/expense-records`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount, description, categoryId, subCategoryId, date })
+        });
+        if (!res.ok) throw new Error('Failed to add expense record');
+        document.getElementById('expenseAmount').value = '';
+        document.getElementById('expenseDescription').value = '';
+        document.getElementById('expenseDate').value = '';
+        loadExpenseRecords();
+      } catch (err) { showGlobalError(err.message); }
+    });
+
+    // ---------- DELETE and PUT Operations ----------
+
+    // Income Category
+    async function deleteIncomeCategory(id) {
+      if (!confirm('Are you sure you want to delete this income category?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-categories/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete income category');
+        loadCategories();
+        populateIncomeCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    async function editIncomeCategory(id, currentName) {
+      const newName = prompt('Enter new name for income category:', currentName);
+      if (!newName) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-categories/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name: newName })
+        });
+        if (!res.ok) throw new Error('Failed to update income category');
+        loadCategories();
+        populateIncomeCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Expense Category
+    async function deleteExpenseCategory(id) {
+      if (!confirm('Are you sure you want to delete this expense category?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete expense category');
+        loadCategories();
+        populateExpenseCategorySelect();
+        populateParentExpenseCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    async function editExpenseCategory(id, currentName) {
+      const newName = prompt('Enter new name for expense category:', currentName);
+      if (!newName) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name: newName })
+        });
+        if (!res.ok) throw new Error('Failed to update expense category');
+        loadCategories();
+        populateExpenseCategorySelect();
+        populateParentExpenseCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Income Record
+    async function deleteIncomeRecord(id) {
+      if (!confirm('Are you sure you want to delete this income record?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-records/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete income record');
+        loadIncomeRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    async function editIncomeRecord(id, currentAmount, currentCategoryId, currentDate) {
+      const newAmount = prompt('Enter new amount:', currentAmount);
+      const newCategoryId = prompt('Enter new category ID:', currentCategoryId);
+      const newDate = prompt('Enter new date (ISO format):', currentDate);
+      if (!newAmount || !newCategoryId || !newDate) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-records/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount: parseFloat(newAmount), category: { id: parseInt(newCategoryId) }, date: newDate })
+        });
+        if (!res.ok) throw new Error('Failed to update income record');
+        loadIncomeRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Expense Subcategory
+    async function deleteExpenseSubcategory(id) {
+      if (!confirm('Are you sure you want to delete this expense subcategory?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete expense subcategory');
+        loadExpenseSubcategories();
+        populateExpenseSubcategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    async function editExpenseSubcategory(id, currentName, currentParentId) {
+      const newName = prompt('Enter new name for expense subcategory:', currentName);
+      const newParentId = prompt('Enter new parent category ID:', currentParentId);
+      if (!newName || !newParentId) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name: newName, parentCategoryId: parseInt(newParentId) })
+        });
+        if (!res.ok) throw new Error('Failed to update expense subcategory');
+        loadExpenseSubcategories();
+        populateExpenseSubcategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+
+    // Expense Record
+    async function deleteExpenseRecord(id) {
+      if (!confirm('Are you sure you want to delete this expense record?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-records/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete expense record');
+        loadExpenseRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    async function editExpenseRecord(id, currentAmount, currentDescription, currentCategoryId, currentSubCategoryId, currentDate) {
+      const newAmount = prompt('Enter new amount:', currentAmount);
+      const newDescription = prompt('Enter new description:', currentDescription);
+      const newCategoryId = prompt('Enter new category ID:', currentCategoryId);
+      const newSubCategoryId = prompt('Enter new subcategory ID:', currentSubCategoryId);
+      const newDate = prompt('Enter new date (ISO format):', currentDate);
+      if (!newAmount || !newDescription || !newCategoryId || !newSubCategoryId || !newDate) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-records/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount: parseFloat(newAmount), description: newDescription, categoryId: parseInt(newCategoryId), subCategoryId: parseInt(newSubCategoryId), date: newDate })
+        });
+        if (!res.ok) throw new Error('Failed to update expense record');
+        loadExpenseRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+  </script>
+</body>
+</html>
