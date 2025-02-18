@@ -5,10 +5,12 @@ import com.example.budgetmanager.dto.UserDTO;
 import com.example.budgetmanager.model.User;
 import com.example.budgetmanager.service.UserService;
 import jakarta.validation.Valid;
+import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/auth")
