@@ -1,0 +1,101 @@
+package com.example.budgetmanager.service;
+
+import com.example.budgetmanager.model.*;
+import com.example.budgetmanager.model.ScheduledTransaction.Interval;
+import com.example.budgetmanager.model.ScheduledTransaction.TransactionType;
+import com.example.budgetmanager.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ScheduledTransactionService {
+
+    private final ScheduledTransactionRepository scheduledTransactionRepository;
+    private final IncomeRecordRepository incomeRecordRepository;
+    private final ExpenseRecordRepository expenseRecordRepository;
+    private final IncomeCategoryRepository incomeCategoryRepository;
+    private final ExpenseCategoryRepository expenseCategoryRepository;
+    private final ExpenseSubCategoryRepository expenseSubCategoryRepository;
+
+    @Transactional
+    public void executeScheduledTransactions() {
+        List<ScheduledTransaction> transactions = scheduledTransactionRepository
+                .findByActiveTrueAndNextExecutionDateBefore(LocalDateTime.now());
+
+        for (ScheduledTransaction tx : transactions) {
+            if (tx.getTransactionType() == TransactionType.INCOME) {
+                executeIncomeTransaction(tx);
+            } else if (tx.getTransactionType() == TransactionType.EXPENSE) {
+                executeExpenseTransaction(tx);
+            }
+            updateNextExecutionDate(tx);
+        }
+    }
+
+    private void executeIncomeTransaction(ScheduledTransaction tx) {
+        // İlgili income category'yi bul
+        IncomeCategory incomeCategory = incomeCategoryRepository.findById(tx.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Scheduled transaction için gelir kategorisi bulunamadı"));
+
+        // Yeni IncomeRecord oluştur
+        IncomeRecord incomeRecord = new IncomeRecord();
+        incomeRecord.setAmount(tx.getAmount());
+        incomeRecord.setDate(LocalDateTime.now());
+        incomeRecord.setUser(tx.getUser());
+        incomeRecord.setCategory(incomeCategory);
+
+        incomeRecordRepository.save(incomeRecord);
+    }
+
+    private void executeExpenseTransaction(ScheduledTransaction tx) {
+
+        ExpenseCategory expenseCategory = expenseCategoryRepository.findById(tx.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Scheduled transaction için gider kategorisi bulunamadı"));
+
+
+        ExpenseRecord expenseRecord = new ExpenseRecord();
+        expenseRecord.setAmount(tx.getAmount());
+        expenseRecord.setDescription(tx.getDescription());
+        expenseRecord.setDate(LocalDateTime.now());
+        expenseRecord.setUser(tx.getUser());
+        expenseRecord.setCategory(expenseCategory);
+
+
+        if (tx.getSubCategoryId() != null) {
+            ExpenseSubCategory subCategory = expenseSubCategoryRepository.findById(tx.getSubCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Scheduled transaction için gider alt kategorisi bulunamadı"));
+            expenseRecord.setSubCategory(subCategory);
+        }
+
+        expenseRecordRepository.save(expenseRecord);
+    }
+
+    private void updateNextExecutionDate(ScheduledTransaction tx) {
+        LocalDateTime nextDate = tx.getNextExecutionDate();
+        Interval interval = tx.getTransactionInterval();
+        switch (interval) {
+            case DAILY:
+                nextDate = nextDate.plusDays(1);
+                break;
+            case WEEKLY:
+                nextDate = nextDate.plusWeeks(1);
+                break;
+            case MONTHLY:
+                nextDate = nextDate.plusMonths(1);
+                break;
+            default:
+                throw new RuntimeException("Desteklenmeyen periyot");
+        }
+        tx.setNextExecutionDate(nextDate);
+        scheduledTransactionRepository.save(tx);
+    }
+
+
+    public ScheduledTransaction createScheduledTransaction(ScheduledTransaction transaction) {
+        return scheduledTransactionRepository.save(transaction);
+    }
+}

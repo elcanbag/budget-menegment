@@ -1,0 +1,4 @@
+package com.example.budgetmanager.scheduler;
+
+public class ScheduledTransactionExecutor {
+}
