@@ -1,0 +1,4 @@
+package com.example.budgetmanager.controller;
+
+public class ReportController {
+}
