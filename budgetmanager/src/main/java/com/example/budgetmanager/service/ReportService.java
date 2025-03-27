@@ -6,6 +6,8 @@ import com.example.budgetmanager.repository.IncomeRecordRepository;
 import com.example.budgetmanager.repository.ExpenseRecordRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -49,4 +51,39 @@ public class ReportService {
         }
         return new ArrayList<>(map.values());
     }
+
+    public Map<String, Double> getExpenseByCategory(String username) {
+        List<Object[]> results = expenseRecordRepository.getTotalExpenseGroupedByCategory(username);
+        Map<String, Double> categoryMap = new HashMap<>();
+        for (Object[] row : results) {
+            String categoryName = (String) row[0];
+            Double totalAmount = (Double) row[1];
+            categoryMap.put(categoryName, totalAmount);
+        }
+        return categoryMap;
+    }
+
+    public Map<String, Double> getExpenseByCategory(String username, LocalDateTime start, LocalDateTime end) {
+        List<Object[]> results = expenseRecordRepository.getExpenseByCategoryInDateRange(username, start, end);
+        Map<String, Double> map = new HashMap<>();
+        for (Object[] row : results) {
+            map.put((String) row[0], (Double) row[1]);
+        }
+        return map;
+    }
+
+    public Map<String, Double> getIncomeByCategory(String username, LocalDateTime start, LocalDateTime end) {
+        List<Object[]> results = incomeRecordRepository.getIncomeByCategoryInDateRange(username, start, end);
+        Map<String, Double> map = new HashMap<>();
+        for (Object[] row : results) {
+            map.put((String) row[0], (Double) row[1]);
+        }
+        return map;
+    }
+
+    public Map<String, Double> getIncomeByCategory(String username) {
+        return getIncomeByCategory(username, LocalDateTime.MIN, LocalDateTime.MAX);
+    }
+
+
 }

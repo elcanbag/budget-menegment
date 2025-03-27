@@ -6,7 +6,10 @@ import com.example.budgetmanager.service.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/reports")
@@ -20,13 +23,37 @@ public class ReportController {
 
     @GetMapping("/summary")
     public ResponseEntity<ReportSummaryDTO> getSummary(Authentication authentication) {
-        ReportSummaryDTO summary = reportService.getSummary(authentication);
-        return ResponseEntity.ok(summary);
+        return ResponseEntity.ok(reportService.getSummary(authentication));
     }
 
     @GetMapping("/monthly")
     public ResponseEntity<List<MonthlyReportDTO>> getMonthly(Authentication authentication) {
-        List<MonthlyReportDTO> monthly = reportService.getMonthly(authentication);
-        return ResponseEntity.ok(monthly);
+        return ResponseEntity.ok(reportService.getMonthly(authentication));
+    }
+
+    @GetMapping("/expense-by-category")
+    public ResponseEntity<Map<String, Double>> getExpenseByCategory(Authentication authentication) {
+        return ResponseEntity.ok(reportService.getExpenseByCategory(authentication.getName()));
+    }
+
+    @GetMapping("/expense-by-category/range")
+    public ResponseEntity<Map<String, Double>> getExpenseByCategoryInRange(
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end,
+            Authentication authentication) {
+        return ResponseEntity.ok(reportService.getExpenseByCategory(authentication.getName(), start, end));
+    }
+
+    @GetMapping("/income-by-category")
+    public ResponseEntity<Map<String, Double>> getIncomeByCategory(Authentication authentication) {
+        return ResponseEntity.ok(reportService.getIncomeByCategory(authentication.getName()));
+    }
+
+    @GetMapping("/income-by-category/range")
+    public ResponseEntity<Map<String, Double>> getIncomeByCategoryInRange(
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end,
+            Authentication authentication) {
+        return ResponseEntity.ok(reportService.getIncomeByCategory(authentication.getName(), start, end));
     }
 }

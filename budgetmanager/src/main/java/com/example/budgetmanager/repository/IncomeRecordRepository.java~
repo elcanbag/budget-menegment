@@ -25,12 +25,4 @@ public interface IncomeRecordRepository extends JpaRepository<IncomeRecord, Long
             "sum(ir.amount), 0) " +
             "from IncomeRecord ir where ir.user.username = ?1 group by FUNCTION('YEAR', ir.date), FUNCTION('MONTH', ir.date)")
     List<MonthlyReportDTO> getMonthlyIncomeByUsername(String username);
-
-    @Query("SELECT ir.category.name, SUM(ir.amount) " +
-            "FROM IncomeRecord ir " +
-            "WHERE ir.user.username = :username " +
-            "AND ir.date BETWEEN :start AND :end " +
-            "GROUP BY ir.category.name")
-    List<Object[]> getIncomeByCategoryInDateRange(String username, LocalDateTime start, LocalDateTime end);
-
 }
