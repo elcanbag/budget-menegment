@@ -6,14 +6,15 @@ import com.example.budgetmanager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface IncomeRecordRepository extends JpaRepository<IncomeRecord, Long> {
 
     List<IncomeRecord> findByUser(User user);
-
     Optional<IncomeRecord> findByIdAndUser(Long id, User user);
+    List<IncomeRecord> findByUserUsernameAndDateBetween(String username, LocalDateTime start, LocalDateTime end);
 
 
     @Query("select sum(ir.amount) from IncomeRecord ir where ir.user.username = ?1")

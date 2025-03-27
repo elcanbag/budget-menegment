@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,4 +69,9 @@ public class IncomeRecordService {
                 .orElseThrow(() -> new RuntimeException("Record not found or access denied"));
         incomeRecordRepository.delete(record);
     }
+
+    public List<IncomeRecord> getRecordsByDateRange(Authentication authentication, LocalDateTime start, LocalDateTime end) {
+        return incomeRecordRepository.findByUserUsernameAndDateBetween(authentication.getName(), start, end);
+    }
+
 }

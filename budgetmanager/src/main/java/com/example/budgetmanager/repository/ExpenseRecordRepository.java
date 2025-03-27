@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 public interface ExpenseRecordRepository extends JpaRepository<ExpenseRecord, Long> {
     List<ExpenseRecord> findByUserUsername(String username);
     Optional<ExpenseRecord> findByIdAndUserUsername(Long id, String username);
+    List<ExpenseRecord> findByUserUsernameAndDateBetween(String username, LocalDateTime start, LocalDateTime end);
 
 
     @Query("select sum(er.amount) from ExpenseRecord er where er.user.username = ?1")

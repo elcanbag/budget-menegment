@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -49,13 +48,4 @@ public class ExpenseRecordController {
         expenseRecordService.deleteRecord(id, authentication);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<ExpenseRecord>> filterExpenseRecords(
-            @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end,
-            Authentication authentication) {
-        return ResponseEntity.ok(expenseRecordService.getRecordsByDateRange(authentication, start, end));
-    }
-
 }

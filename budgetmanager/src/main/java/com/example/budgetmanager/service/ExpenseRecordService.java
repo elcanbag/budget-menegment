@@ -74,4 +74,9 @@ public class ExpenseRecordService {
         ExpenseRecord record = getRecordByIdAndAuthenticatedUser(id, authentication);
         expenseRecordRepository.delete(record);
     }
+
+    public List<ExpenseRecord> getRecordsByDateRange(Authentication authentication, LocalDateTime start, LocalDateTime end) {
+        return expenseRecordRepository.findByUserUsernameAndDateBetween(authentication.getName(), start, end);
+    }
+
 }
