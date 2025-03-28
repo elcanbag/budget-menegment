@@ -85,20 +85,4 @@ public class ReportController {
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new InputStreamResource(stream));
     }
-
-    @GetMapping("/export/expenses/pdf")
-    public ResponseEntity<InputStreamResource> exportExpensesToPDF(Authentication auth) throws IOException {
-        String username = auth.getName();
-        List<ExpenseRecord> expenses = expenseRecordRepository.findByUserUsername(username);
-        ByteArrayInputStream stream = reportExportService.exportExpensesToPDF(expenses);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=expenses.pdf");
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(new InputStreamResource(stream));
-    }
-
 }
