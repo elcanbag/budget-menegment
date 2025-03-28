@@ -3,7 +3,9 @@ package com.example.budgetmanager.controller;
 import com.example.budgetmanager.dto.ReportSummaryDTO;
 import com.example.budgetmanager.dto.MonthlyReportDTO;
 import com.example.budgetmanager.model.ExpenseRecord;
+import com.example.budgetmanager.model.IncomeRecord;
 import com.example.budgetmanager.repository.ExpenseRecordRepository;
+import com.example.budgetmanager.repository.IncomeRecordRepository;
 import com.example.budgetmanager.service.ReportExportService;
 import com.example.budgetmanager.service.ReportService;
 import org.springframework.core.io.InputStreamResource;
@@ -26,13 +28,13 @@ public class ReportController {
     private final ReportService reportService;
     private final ExpenseRecordRepository expenseRecordRepository;
     private final ReportExportService reportExportService;
+    private final IncomeRecordRepository incomeRecordRepository;
 
-    public ReportController(ReportService reportService,
-                            ExpenseRecordRepository expenseRecordRepository,
-                            ReportExportService reportExportService) {
+    public ReportController(ReportService reportService, ExpenseRecordRepository expenseRecordRepository, ReportExportService reportExportService, IncomeRecordRepository incomeRecordRepository) {
         this.reportService = reportService;
         this.expenseRecordRepository = expenseRecordRepository;
         this.reportExportService = reportExportService;
+        this.incomeRecordRepository = incomeRecordRepository;
     }
 
     @GetMapping("/summary")
@@ -98,6 +100,36 @@ public class ReportController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(stream));
+    }
+
+    @GetMapping("/export/incomes/pdf")
+    public ResponseEntity<InputStreamResource> exportIncomesToPDF(Authentication auth) {
+        String username = auth.getName();
+        List<IncomeRecord> incomes = incomeRecordRepository.findByUserUsername(username);
+        ByteArrayInputStream stream = reportExportService.exportIncomesToPDF(incomes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=incomes.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(stream));
+    }
+
+    @GetMapping("/export/incomes/excel")
+    public ResponseEntity<InputStreamResource> exportIncomesToExcel(Authentication auth) throws IOException {
+        String username = auth.getName();
+        List<IncomeRecord> incomes = incomeRecordRepository.findByUserUsername(username);
+        ByteArrayInputStream stream = reportExportService.exportIncomesToExcel(incomes);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=incomes.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new InputStreamResource(stream));
     }
 

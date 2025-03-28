@@ -14,6 +14,7 @@ public interface IncomeRecordRepository extends JpaRepository<IncomeRecord, Long
 
     List<IncomeRecord> findByUser(User user);
     Optional<IncomeRecord> findByIdAndUser(Long id, User user);
+    List<IncomeRecord> findByUserUsername(String username);
     List<IncomeRecord> findByUserUsernameAndDateBetween(String username, LocalDateTime start, LocalDateTime end);
 
 
