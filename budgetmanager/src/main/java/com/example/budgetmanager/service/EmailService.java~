@@ -1,0 +1,4 @@
+package com.example.budgetmanager.service;
+
+public class EmailService {
+}

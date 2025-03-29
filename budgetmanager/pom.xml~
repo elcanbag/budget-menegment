@@ -83,7 +83,7 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-
+        
         <!-- Swagger OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
