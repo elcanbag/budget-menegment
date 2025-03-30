@@ -43,9 +43,6 @@ public class UserService implements UserDetailsService {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             user.setEmail(userDTO.getEmail());
-            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-                user.setPassword(userDTO.getPassword());
-            }
             return userRepository.save(user);
         }
         return null;
@@ -68,9 +65,6 @@ public class UserService implements UserDetailsService {
             User user = optionalUser.get();
             user.setEmail(dto.getEmail());
             user.setFullName(dto.getFullName());
-            if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-                user.setPassword(dto.getPassword());
-            }
             userRepository.save(user);
         }
     }

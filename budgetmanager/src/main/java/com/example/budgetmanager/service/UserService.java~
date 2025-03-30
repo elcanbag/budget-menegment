@@ -1,5 +1,6 @@
 package com.example.budgetmanager.service;
 
+import com.example.budgetmanager.dto.UpdateUserDTO;
 import com.example.budgetmanager.dto.UserDTO;
 import com.example.budgetmanager.model.User;
 import com.example.budgetmanager.repository.UserRepository;
@@ -59,6 +60,16 @@ public class UserService implements UserDetailsService {
     public User getByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    public void updateUser(String username, UpdateUserDTO dto) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setEmail(dto.getEmail());
+            user.setFullName(dto.getFullName());
+            userRepository.save(user);
+        }
     }
 
 }
