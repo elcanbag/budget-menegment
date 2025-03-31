@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Budget App - Login</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+  <div id="app" class="max-w-6xl mx-auto p-4">
+    <!-- Global Error Message -->
+    <div id="globalError" class="mb-4 text-red-600"></div>
+    
+    <!-- Login Section -->
+    <div id="loginSection" class="max-w-md mx-auto bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-bold mb-4">Login</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label for="username" class="block text-gray-700">Username</label>
+          <input type="text" id="username" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="password" class="block text-gray-700">Password</label>
+          <input type="password" id="password" class="w-full border rounded p-2" required />
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="rememberMe" class="mr-2" />
+          <label for="rememberMe" class="text-gray-700">Remember Me</label>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded">Login</button>
+      </form>
+      <p class="mt-4 text-center">
+        Don't have an account? <a href="#" id="showRegister" class="text-blue-500">Register</a>
+      </p>
+      <div id="loginError" class="text-red-500 mt-2"></div>
+    </div>
+    
+    <!-- Registration Section -->
+    <div id="registerSection" class="max-w-md mx-auto bg-white p-6 rounded shadow hidden">
+      <h2 class="text-xl font-bold mb-4">Register</h2>
+      <form id="registerForm" class="space-y-4">
+        <div>
+          <label for="fullName" class="block text-gray-700">Full Name</label>
+          <input type="text" id="fullName" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="regUsername" class="block text-gray-700">Username</label>
+          <input type="text" id="regUsername" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="email" class="block text-gray-700">Email</label>
+          <input type="email" id="email" class="w-full border rounded p-2" required />
+        </div>
+        <div>
+          <label for="regPassword" class="block text-gray-700">Password</label>
+          <input type="password" id="regPassword" class="w-full border rounded p-2" required />
+        </div>
+        <button type="submit" class="w-full bg-green-500 text-white p-2 rounded">Register</button>
+      </form>
+      <p class="mt-4 text-center">
+        Already have an account? <a href="#" id="showLogin" class="text-blue-500">Login</a>
+      </p>
+      <div id="registerError" class="text-red-500 mt-2"></div>
+    </div>
+  </div>
+
+  <!-- Verification Modal (hidden by default) -->
+  <div id="verificationModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 hidden">
+    <div class="bg-white p-6 rounded shadow-lg w-96">
+      <h3 class="text-xl font-bold mb-4">Email Verification</h3>
+      <p id="verificationMessage" class="mb-4">
+        User registered. Please check your email to verify your account.
+      </p>
+      <form id="verificationForm" class="space-y-4">
+        <div>
+          <label for="verificationCode" class="block text-gray-700">Enter 6-digit code</label>
+          <input type="text" id="verificationCode" class="w-full border rounded p-2" pattern="\d{6}" maxlength="6" required />
+        </div>
+        <div id="verificationError" class="text-red-500"></div>
+        <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded">Verify Account</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const baseUrl = 'http://localhost';
+
+    // Global değişkenler: sign up formundan alınan username ve password
+    let signupUsername = '';
+    let signupPassword = '';
+
+    // Formlar arası geçiş
+    document.getElementById('showRegister').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('registerSection').classList.remove('hidden');
+      document.getElementById('globalError').textContent = '';
+    });
+    document.getElementById('showLogin').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('registerSection').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('globalError').textContent = '';
+    });
+
+    // Login işlemi
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+      try {
+        const res = await fetch(`${baseUrl}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (!res.ok) throw new Error('Login failed');
+        const contentType = res.headers.get('content-type');
+        let data = contentType && contentType.includes('application/json') ? await res.json() : await res.text();
+
+        if (rememberMe) {
+          localStorage.setItem('username', username);
+          localStorage.setItem('password', password);
+        } else {
+          localStorage.removeItem('username');
+          localStorage.removeItem('password');
+        }
+
+        window.location.href = 'dashboard.html';
+      } catch (err) {
+        document.getElementById('loginError').textContent = err.message;
+        document.getElementById('globalError').textContent = err.message;
+      }
+    });
+
+    // Register işlemi
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById('fullName').value;
+      const username = document.getElementById('regUsername').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('regPassword').value;
+      try {
+        const res = await fetch(`${baseUrl}/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, username, email, password })
+        });
+        if (!res.ok) throw new Error('Registration failed');
+
+        // Registration başarılı: sunucudan "User registered. Please check your email to verify your account." mesajı gelmeli.
+        // Sign up formundan alınan username ve password'ı saklayıp, modalı açıyoruz.
+        signupUsername = username;
+        signupPassword = password;
+        
+        // Modalı aç
+        document.getElementById('verificationModal').classList.remove('hidden');
+        // Hata mesajlarını temizle
+        document.getElementById('registerError').textContent = '';
+        document.getElementById('globalError').textContent = '';
+      } catch (err) {
+        document.getElementById('registerError').textContent = err.message;
+        document.getElementById('globalError').textContent = err.message;
+      }
+    });
+
+    // Verification form submit işlemi
+    document.getElementById('verificationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('verificationCode').value;
+      try {
+        const verifyRes = await fetch(`${baseUrl}/auth/verify-code?username=${signupUsername}&code=${code}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (!verifyRes.ok) {
+          throw new Error('Invalid or expired code');
+        }
+        const verifyData = await verifyRes.text();
+        if (verifyData.includes("Account verified successfully")) {
+          alert("Account verified successfully");
+          // Modalı kapat ve login formunu otomatik doldur
+          document.getElementById('verificationModal').classList.add('hidden');
+          document.getElementById('username').value = signupUsername;
+          document.getElementById('password').value = signupPassword;
+          // Gerekirse registerSection'ı gizleyip, loginSection'ı göster
+          document.getElementById('registerSection').classList.add('hidden');
+          document.getElementById('loginSection').classList.remove('hidden');
+        } else {
+          throw new Error('Invalid or expired code');
+        }
+      } catch (err) {
+        document.getElementById('verificationError').textContent = err.message;
+      }
+    });
+
+    // Eğer daha önce giriş yapılmışsa, dashboard.html'e yönlendir.
+    window.addEventListener('load', () => {
+      const storedUsername = localStorage.getItem('username');
+      const storedPassword = localStorage.getItem('password');
+      if (storedUsername && storedPassword) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Budget App - Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+  <div id="app" class="max-w-6xl mx-auto p-4">
+
+    <div id="globalError" class="mb-4 text-red-600"></div>
+    
+    <div id="dashboard">
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">Dashboard</h2>
+        <div class="flex items-center">
+
+          <span id="userNameDisplay" class="mr-4 text-lg text-gray-600"></span>
+          <button id="logout" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+        </div>
+      </div>
+      <div id="userProfile" class="mb-4">
+
+      </div>
+      <div id="content" class="space-y-8">
+
+        <!-- Income & Expense Categories -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Income Categories</h3>
+
+          <form id="incomeCategoryForm" class="mb-4 flex gap-2">
+            <input type="text" id="incomeCategoryName" placeholder="New Income Category" class="border rounded p-2 flex-1" required />
+            <button type="submit" class="bg-green-500 text-white p-2 rounded">Add</button>
+          </form>
+          <ul id="incomeCategories" class="mb-4 border p-2"></ul>
+
+          <h3 class="text-xl font-bold mb-2">Expense Categories</h3>
+
+          <form id="expenseCategoryForm" class="mb-4 flex gap-2">
+            <input type="text" id="expenseCategoryName" placeholder="New Expense Category" class="border rounded p-2 flex-1" required />
+            <button type="submit" class="bg-green-500 text-white p-2 rounded">Add</button>
+          </form>
+          <ul id="expenseCategories" class="mb-4 border p-2"></ul>
+        </div>
+
+        <!-- Income Records -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Income Records</h3>
+
+          <form id="incomeRecordForm" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <input type="number" step="0.01" id="incomeAmount" placeholder="Amount" class="border rounded p-2" required />
+            <select id="incomeCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Category</option>
+            </select>
+            <input type="datetime-local" id="incomeDate" class="border rounded p-2" required />
+            <button type="submit" class="md:col-span-3 bg-green-500 text-white p-2 rounded">Add Income Record</button>
+          </form>
+          <div id="incomeRecords" class="border p-4"></div>
+        </div>
+
+        <!-- Expense Subcategories & Expense Records -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Expense Subcategories</h3>
+
+          <form id="expenseSubcategoryForm" class="mb-4 flex gap-2">
+            <input type="text" id="expenseSubcategoryName" placeholder="New Expense Subcategory" class="border rounded p-2 flex-1" required />
+            <select id="parentExpenseCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Parent Category</option>
+            </select>
+            <button type="submit" class="bg-green-500 text-white p-2 rounded">Add</button>
+          </form>
+          <div id="expenseSubcategories" class="space-y-4"></div>
+
+          <h3 class="text-xl font-bold mb-2">Expense Records</h3>
+          <form id="expenseRecordForm" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-2">
+            <input type="number" step="0.01" id="expenseAmount" placeholder="Amount" class="border rounded p-2" required />
+            <input type="text" id="expenseDescription" placeholder="Description" class="border rounded p-2" required />
+            <select id="expenseCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Category</option>
+            </select>
+            <select id="expenseSubcategorySelect" class="border rounded p-2" required>
+              <option value="">Select Subcategory</option>
+            </select>
+            <input type="datetime-local" id="expenseDate" class="border rounded p-2" required />
+            <button type="submit" class="md:col-span-4 bg-green-500 text-white p-2 rounded">Add Expense Record</button>
+          </form>
+          <div id="expenseRecords" class="border p-4"></div>
+        </div>
+
+        <!-- Scheduled Transactions Section -->
+        <div>
+          <h3 class="text-xl font-bold mb-2">Scheduled Transactions</h3>
+          <form id="scheduledTransactionForm" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-2">
+            <input type="number" step="0.01" id="scheduledAmount" placeholder="Amount" class="border rounded p-2" required />
+            <input type="text" id="scheduledDescription" placeholder="Description" class="border rounded p-2" required />
+            <select id="scheduledCategorySelect" class="border rounded p-2" required>
+              <option value="">Select Category</option>
+            </select>
+            <select id="scheduledSubcategorySelect" class="border rounded p-2">
+              <option value="">Select Subcategory (Optional)</option>
+            </select>
+            <select id="scheduledTransactionType" class="border rounded p-2" required>
+              <option value="EXPENSE" selected>Expense</option>
+              <option value="INCOME">Income</option>
+            </select>
+            <select id="scheduledTransactionInterval" class="border rounded p-2" required>
+              <option value="DAILY">Daily</option>
+              <option value="WEEKLY">Weekly</option>
+              <option value="MONTHLY" selected>Monthly</option>
+              <option value="YEARLY">Yearly</option>
+            </select>
+            <input type="datetime-local" id="scheduledNextExecutionDate" class="border rounded p-2" required />
+            <div class="flex items-center">
+              <input type="checkbox" id="scheduledActive" class="mr-2" checked />
+              <label for="scheduledActive" class="text-gray-700">Active</label>
+            </div>
+            <button type="submit" class="md:col-span-4 bg-green-500 text-white p-2 rounded">Add Scheduled Transaction</button>
+          </form>
+          <div id="scheduledTransactions" class="border p-4"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    if (!localStorage.getItem('username') || !localStorage.getItem('password')) {
+      window.location.href = 'index.html';
+    }
+    const baseUrl = 'http://localhost';
+    const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7 21H3v-4L16.732 3.732z" />
+    </svg>`;
+    const xIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>`;
+    
+
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      window.location.href = 'index.html';
+    });
+
+    document.getElementById('userNameDisplay').textContent = localStorage.getItem('username');
+    
+
+    async function loadCategories() {
+      try {
+        const incomeRes = await fetch(`${baseUrl}/income-categories`, { headers: getAuthHeaders() });
+        if (!incomeRes.ok) throw new Error('Failed to load income categories');
+        const incomeData = await incomeRes.json();
+        const incomeList = document.getElementById('incomeCategories');
+        incomeList.innerHTML = incomeData.length ? '' : '<li>No income categories available</li>';
+        incomeData.forEach(cat => {
+          const li = document.createElement('li');
+          li.className = 'border p-2 my-1 flex justify-between items-center';
+          li.innerHTML = `<span>${cat.name}</span>
+            <span>
+              <button onclick="editIncomeCategory(${cat.id}, '${cat.name}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteIncomeCategory(${cat.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          incomeList.appendChild(li);
+        });
+    
+        const expenseRes = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!expenseRes.ok) throw new Error('Failed to load expense categories');
+        const expenseData = await expenseRes.json();
+        const expenseList = document.getElementById('expenseCategories');
+        expenseList.innerHTML = expenseData.length ? '' : '<li>No expense categories available</li>';
+        expenseData.forEach(cat => {
+          const li = document.createElement('li');
+          li.className = 'border p-2 my-1 flex justify-between items-center';
+          li.innerHTML = `<span>${cat.name}</span>
+            <span>
+              <button onclick="editExpenseCategory(${cat.id}, '${cat.name}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteExpenseCategory(${cat.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          expenseList.appendChild(li);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function loadIncomeRecords() {
+      try {
+        const res = await fetch(`${baseUrl}/income-records`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load income records');
+        const records = await res.json();
+        const container = document.getElementById('incomeRecords');
+        container.innerHTML = records.length ? '' : '<p>No income records available</p>';
+        records.forEach(record => {
+          const div = document.createElement('div');
+          div.className = 'border-b py-2 flex justify-between items-center';
+          div.innerHTML = `<span>Amount: ${record.amount}, Category: ${record.category.name}, Date: ${new Date(record.date).toLocaleString()}</span>
+            <span>
+              <button onclick="editIncomeRecord(${record.id}, ${record.amount}, '${record.category ? record.category.id : ''}', '${record.date}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteIncomeRecord(${record.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function loadExpenseSubcategories() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense subcategories');
+        const subs = await res.json();
+        const container = document.getElementById('expenseSubcategories');
+        container.innerHTML = '';
+        if (!subs.length) {
+          container.innerHTML = '<p>No expense subcategories available</p>';
+        } else {
+          subs.forEach(sub => {
+            const card = document.createElement('div');
+            card.className = 'border p-4 mb-4';
+            card.innerHTML = `
+              <h4 class="font-bold mb-2">
+                ${sub.name}
+                <button onclick="editExpenseSubcategory(${sub.id}, '${sub.name}', ${sub.parentCategory ? sub.parentCategory.id : ''})" class="text-blue-600 ml-2" title="Edit">${pencilIcon}</button>
+                <button onclick="deleteExpenseSubcategory(${sub.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+              </h4>
+              <div id="records-sub-${sub.id}" class="ml-4 text-sm text-gray-700"></div>`;
+            container.appendChild(card);
+          });
+        }
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function loadExpenseRecords() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-records`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense records');
+        const records = await res.json();
+        const subContainer = document.getElementById('expenseSubcategories');
+        Array.from(subContainer.children).forEach(card => {
+          const recContainer = card.querySelector('div[id^="records-sub-"]');
+          recContainer.innerHTML = '';
+        });
+        const expenseRecordsContainer = document.getElementById('expenseRecords');
+        expenseRecordsContainer.innerHTML = records.length ? '' : '<p>No expense records available</p>';
+        if (records.length) {
+          records.forEach(record => {
+            const div = document.createElement('div');
+            div.className = 'border-b py-2 flex justify-between items-center';
+            div.innerHTML = `<span>Amount: ${record.amount}, Description: ${record.description}, Date: ${new Date(record.date).toLocaleString()}</span>
+              <span>
+                <button onclick="editExpenseRecord(${record.id}, ${record.amount}, '${record.description}', ${record.category ? record.category.id : ''}, ${record.subCategory ? record.subCategory.id : ''}, '${record.date}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+                <button onclick="deleteExpenseRecord(${record.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+              </span>`;
+            expenseRecordsContainer.appendChild(div);
+            if (record.subCategory && record.subCategory.id) {
+              const container = document.getElementById(`records-sub-${record.subCategory.id}`);
+              if (container) {
+                const recDiv = document.createElement('div');
+                recDiv.className = 'border-t pt-2 mt-2 flex justify-between items-center';
+                recDiv.innerHTML = `<span>Amount: ${record.amount}, Description: ${record.description}, Date: ${new Date(record.date).toLocaleString()}</span>
+                  <span>
+                    <button onclick="editExpenseRecord(${record.id}, ${record.amount}, '${record.description}', ${record.category ? record.category.id : ''}, ${record.subCategory ? record.subCategory.id : ''}, '${record.date}')" class="text-blue-600" title="Edit">${pencilIcon}</button>
+                    <button onclick="deleteExpenseRecord(${record.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+                  </span>`;
+                container.appendChild(recDiv);
+              }
+            }
+          });
+        }
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function populateIncomeCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/income-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load income categories for selection');
+        const cats = await res.json();
+        const select = document.getElementById('incomeCategorySelect');
+        select.innerHTML = '<option value="">Select Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function populateExpenseCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense categories for selection');
+        const cats = await res.json();
+        const select = document.getElementById('expenseCategorySelect');
+        select.innerHTML = '<option value="">Select Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function populateExpenseSubcategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense subcategories for selection');
+        const subs = await res.json();
+        const select = document.getElementById('expenseSubcategorySelect');
+        select.innerHTML = '<option value="">Select Subcategory</option>';
+        subs.forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function populateParentExpenseCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense categories for parent selection');
+        const cats = await res.json();
+        const select = document.getElementById('parentExpenseCategorySelect');
+        select.innerHTML = '<option value="">Select Parent Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    // --- Scheduled Transactions Dropdowns ---
+    async function populateScheduledCategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load categories for scheduled transactions');
+        const cats = await res.json();
+        const select = document.getElementById('scheduledCategorySelect');
+        select.innerHTML = '<option value="">Select Category</option>';
+        cats.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function populateScheduledSubcategorySelect() {
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load subcategories for scheduled transactions');
+        const subs = await res.json();
+        const select = document.getElementById('scheduledSubcategorySelect');
+        select.innerHTML = '<option value="">Select Subcategory (Optional)</option>';
+        subs.forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.name;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    // --- Form Submit Event Listeners ---
+    document.getElementById('incomeCategoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('incomeCategoryName').value;
+      try {
+        const res = await fetch(`${baseUrl}/income-categories`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error('Failed to add income category');
+        document.getElementById('incomeCategoryName').value = '';
+        loadCategories();
+        populateIncomeCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    });
+    
+    document.getElementById('expenseCategoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('expenseCategoryName').value;
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error('Failed to add expense category');
+        document.getElementById('expenseCategoryName').value = '';
+        loadCategories();
+        populateExpenseCategorySelect();
+        populateParentExpenseCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    });
+    
+    document.getElementById('incomeRecordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('incomeAmount').value);
+      const categoryId = parseInt(document.getElementById('incomeCategorySelect').value);
+      const date = document.getElementById('incomeDate').value;
+      if (!categoryId) { showGlobalError('Please select an income category'); return; }
+      try {
+        const res = await fetch(`${baseUrl}/income-records`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount, category: { id: categoryId }, date })
+        });
+        if (!res.ok) throw new Error('Failed to add income record');
+        document.getElementById('incomeAmount').value = '';
+        document.getElementById('incomeDate').value = '';
+        loadIncomeRecords();
+      } catch (err) { showGlobalError(err.message); }
+    });
+    
+    document.getElementById('expenseSubcategoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('expenseSubcategoryName').value;
+      const parentCategoryId = parseInt(document.getElementById('parentExpenseCategorySelect').value);
+      if (!parentCategoryId) { showGlobalError('Please select a parent expense category'); return; }
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name, parentCategoryId })
+        });
+        if (!res.ok) throw new Error('Failed to add expense subcategory');
+        document.getElementById('expenseSubcategoryName').value = '';
+        loadExpenseSubcategories();
+        populateExpenseSubcategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    });
+    
+    document.getElementById('expenseRecordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('expenseAmount').value);
+      const description = document.getElementById('expenseDescription').value;
+      const categoryId = parseInt(document.getElementById('expenseCategorySelect').value);
+      const subCategoryId = parseInt(document.getElementById('expenseSubcategorySelect').value);
+      const date = document.getElementById('expenseDate').value;
+      if (!categoryId || !subCategoryId) { showGlobalError('Please select both expense category and subcategory'); return; }
+      try {
+        const res = await fetch(`${baseUrl}/expense-records`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount, description, categoryId, subCategoryId, date })
+        });
+        if (!res.ok) throw new Error('Failed to add expense record');
+        document.getElementById('expenseAmount').value = '';
+        document.getElementById('expenseDescription').value = '';
+        document.getElementById('expenseDate').value = '';
+        loadExpenseRecords();
+      } catch (err) { showGlobalError(err.message); }
+    });
+    
+    // --- DELETE & PUT Operations for Existing APIs ---
+    async function deleteIncomeCategory(id) {
+      if (!confirm('Are you sure you want to delete this income category?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-categories/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete income category');
+        loadCategories();
+        populateIncomeCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function editIncomeCategory(id, currentName) {
+      const newName = prompt('Enter new name for income category:', currentName);
+      if (!newName) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-categories/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name: newName })
+        });
+        if (!res.ok) throw new Error('Failed to update income category');
+        loadCategories();
+        populateIncomeCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function deleteExpenseCategory(id) {
+      if (!confirm('Are you sure you want to delete this expense category?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete expense category');
+        loadCategories();
+        populateExpenseCategorySelect();
+        populateParentExpenseCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function editExpenseCategory(id, currentName) {
+      const newName = prompt('Enter new name for expense category:', currentName);
+      if (!newName) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-categories/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name: newName })
+        });
+        if (!res.ok) throw new Error('Failed to update expense category');
+        loadCategories();
+        populateExpenseCategorySelect();
+        populateParentExpenseCategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function deleteIncomeRecord(id) {
+      if (!confirm('Are you sure you want to delete this income record?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-records/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete income record');
+        loadIncomeRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function editIncomeRecord(id, currentAmount, currentCategoryId, currentDate) {
+      const newAmount = prompt('Enter new amount:', currentAmount);
+      const newCategoryId = prompt('Enter new category ID:', currentCategoryId);
+      const newDate = prompt('Enter new date (ISO format):', currentDate);
+      if (!newAmount || !newCategoryId || !newDate) return;
+      try {
+        const res = await fetch(`${baseUrl}/income-records/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount: parseFloat(newAmount), category: { id: parseInt(newCategoryId) }, date: newDate })
+        });
+        if (!res.ok) throw new Error('Failed to update income record');
+        loadIncomeRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function deleteExpenseSubcategory(id) {
+      if (!confirm('Are you sure you want to delete this expense subcategory?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete expense subcategory');
+        loadExpenseSubcategories();
+        populateExpenseSubcategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function editExpenseSubcategory(id, currentName, currentParentId) {
+      const newName = prompt('Enter new name for expense subcategory:', currentName);
+      const newParentId = prompt('Enter new parent category ID:', currentParentId);
+      if (!newName || !newParentId) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-subcategories/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ name: newName, parentCategoryId: parseInt(newParentId) })
+        });
+        if (!res.ok) throw new Error('Failed to update expense subcategory');
+        loadExpenseSubcategories();
+        populateExpenseSubcategorySelect();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function deleteExpenseRecord(id) {
+      if (!confirm('Are you sure you want to delete this expense record?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-records/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete expense record');
+        loadExpenseRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    async function editExpenseRecord(id, currentAmount, currentDescription, currentCategoryId, currentSubCategoryId, currentDate) {
+      const newAmount = prompt('Enter new amount:', currentAmount);
+      const newDescription = prompt('Enter new description:', currentDescription);
+      const newCategoryId = prompt('Enter new category ID:', currentCategoryId);
+      const newSubCategoryId = prompt('Enter new subcategory ID:', currentSubCategoryId);
+      const newDate = prompt('Enter new date (ISO format):', currentDate);
+      if (!newAmount || !newDescription || !newCategoryId || !newSubCategoryId || !newDate) return;
+      try {
+        const res = await fetch(`${baseUrl}/expense-records/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount: parseFloat(newAmount), description: newDescription, categoryId: parseInt(newCategoryId), subCategoryId: parseInt(newSubCategoryId), date: newDate })
+        });
+        if (!res.ok) throw new Error('Failed to update expense record');
+        loadExpenseRecords();
+      } catch (err) { showGlobalError(err.message); }
+    }
+    
+    // --- Scheduled Transactions Functions ---
+    document.getElementById('scheduledTransactionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('scheduledAmount').value);
+      const description = document.getElementById('scheduledDescription').value;
+      const categoryId = parseInt(document.getElementById('scheduledCategorySelect').value);
+      const subCategoryVal = document.getElementById('scheduledSubcategorySelect').value;
+      const subCategoryId = subCategoryVal ? parseInt(subCategoryVal) : null;
+      const transactionType = document.getElementById('scheduledTransactionType').value;
+      const transactionInterval = document.getElementById('scheduledTransactionInterval').value;
+      const nextExecutionDate = document.getElementById('scheduledNextExecutionDate').value;
+      const active = document.getElementById('scheduledActive').checked;
+      try {
+        const res = await fetch(`${baseUrl}/scheduled-transactions`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ amount, description, categoryId, subCategoryId, transactionType, transactionInterval, nextExecutionDate, active })
+        });
+        if (!res.ok) throw new Error('Failed to add scheduled transaction');
+        document.getElementById('scheduledAmount').value = '';
+        document.getElementById('scheduledDescription').value = '';
+        document.getElementById('scheduledCategorySelect').value = '';
+        document.getElementById('scheduledSubcategorySelect').value = '';
+        document.getElementById('scheduledTransactionType').value = 'EXPENSE';
+        document.getElementById('scheduledTransactionInterval').value = 'MONTHLY';
+        document.getElementById('scheduledNextExecutionDate').value = '';
+        document.getElementById('scheduledActive').checked = true;
+        loadScheduledTransactions();
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    });
+    
+    async function loadScheduledTransactions() {
+      try {
+        const res = await fetch(`${baseUrl}/scheduled-transactions`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load scheduled transactions');
+        const transactions = await res.json();
+        const container = document.getElementById('scheduledTransactions');
+        container.innerHTML = transactions.length ? '' : '<p>No scheduled transactions available</p>';
+        transactions.forEach(tx => {
+          const div = document.createElement('div');
+          div.className = 'border-b py-2 flex justify-between items-center';
+          div.innerHTML = `<span>
+              Amount: ${tx.amount}, Description: ${tx.description}, Interval: ${tx.transactionInterval}, Next: ${new Date(tx.nextExecutionDate).toLocaleString()}
+            </span>
+            <span>
+              <button onclick="editScheduledTransaction(${tx.id}, ${tx.amount}, '${tx.description}', ${tx.categoryId}, ${tx.subCategoryId ? tx.subCategoryId : 'null'}, '${tx.transactionType}', '${tx.transactionInterval}', '${tx.nextExecutionDate}', ${tx.active})" class="text-blue-600" title="Edit">${pencilIcon}</button>
+              <button onclick="deleteScheduledTransaction(${tx.id})" class="text-red-600 ml-2" title="Delete">${xIcon}</button>
+            </span>`;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function editScheduledTransaction(id, currentAmount, currentDescription, currentCategoryId, currentSubCategoryId, currentTransactionType, currentTransactionInterval, currentNextExecutionDate, currentActive) {
+      const newAmount = prompt('Enter new amount:', currentAmount);
+      const newDescription = prompt('Enter new description:', currentDescription);
+      const newCategoryId = prompt('Enter new category ID:', currentCategoryId);
+      const newSubCategoryId = prompt('Enter new subcategory ID (or leave blank):', currentSubCategoryId);
+      const newTransactionType = prompt('Enter new transaction type (EXPENSE or INCOME):', currentTransactionType);
+      const newTransactionInterval = prompt('Enter new transaction interval (DAILY, WEEKLY, MONTHLY, YEARLY):', currentTransactionInterval);
+      const newNextExecutionDate = prompt('Enter new next execution date (ISO format):', currentNextExecutionDate);
+      const newActive = confirm('Should this scheduled transaction be active?');
+      if (!newAmount || !newDescription || !newCategoryId || !newTransactionType || !newTransactionInterval || !newNextExecutionDate) return;
+      try {
+        const res = await fetch(`${baseUrl}/scheduled-transactions/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            amount: parseFloat(newAmount),
+            description: newDescription,
+            categoryId: parseInt(newCategoryId),
+            subCategoryId: newSubCategoryId ? parseInt(newSubCategoryId) : null,
+            transactionType: newTransactionType,
+            transactionInterval: newTransactionInterval,
+            nextExecutionDate: newNextExecutionDate,
+            active: newActive
+          })
+        });
+        if (!res.ok) throw new Error('Failed to update scheduled transaction');
+        loadScheduledTransactions();
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    async function deleteScheduledTransaction(id) {
+      if (!confirm('Are you sure you want to delete this scheduled transaction?')) return;
+      try {
+        const res = await fetch(`${baseUrl}/scheduled-transactions/${id}`, {
+          method: 'DELETE',
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to delete scheduled transaction');
+        loadScheduledTransactions();
+      } catch (err) {
+        showGlobalError(err.message);
+      }
+    }
+    
+    function showGlobalError(message) {
+      const globalErrorEl = document.getElementById('globalError');
+      globalErrorEl.textContent = message;
+      console.error(message);
+    }
+    
+    function getAuthHeaders() {
+      const username = localStorage.getItem('username') || '';
+      const password = localStorage.getItem('password') || '';
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(username + ':' + password)
+      };
+    }
+    
+    window.addEventListener('load', () => {
+      loadCategories();
+      loadIncomeRecords();
+      loadExpenseSubcategories();
+      loadExpenseRecords();
+      loadScheduledTransactions();
+      populateIncomeCategorySelect();
+      populateExpenseCategorySelect();
+      populateExpenseSubcategorySelect();
+      populateParentExpenseCategorySelect();
+      populateScheduledCategorySelect();
+      populateScheduledSubcategorySelect();
+    });
+  </script>
+</body>
+</html>
