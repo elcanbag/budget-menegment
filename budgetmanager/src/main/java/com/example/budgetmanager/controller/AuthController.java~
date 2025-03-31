@@ -79,9 +79,7 @@ public class AuthController {
         codeRepository.delete(verificationCode);
 
         return ResponseEntity.ok("Account verified successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
+        
     }
 
     @PostMapping("/login")

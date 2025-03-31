@@ -1,0 +1,4 @@
+package com.example.budgetmanager.repository;
+
+public class VerificationCodeRepository {
+}
