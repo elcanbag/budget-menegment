@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Budget App - Reports</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+  <div id="app" class="max-w-6xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">Reports</h1>
+    
+    <!-- Filter Form: Tarih aralığı seçimi -->
+    <div class="bg-white p-4 rounded shadow mb-8">
+      <h2 class="text-xl font-semibold mb-2">Filter by Date Range</h2>
+      <form id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <div>
+          <label for="startDate" class="block text-gray-700">Start Date</label>
+          <input type="datetime-local" id="startDate" class="w-full border rounded p-2" />
+        </div>
+        <div>
+          <label for="endDate" class="block text-gray-700">End Date</label>
+          <input type="datetime-local" id="endDate" class="w-full border rounded p-2" />
+        </div>
+        <div>
+          <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded">Search</button>
+        </div>
+      </form>
+      <p id="filterError" class="mt-2 text-red-500"></p>
+    </div>
+    
+    <!-- Report Summary Cards -->
+    <div id="reportSummary" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold">Total Income</h2>
+        <p id="totalIncome" class="text-2xl text-green-600"></p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold">Total Expense</h2>
+        <p id="totalExpense" class="text-2xl text-red-600"></p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold">Net</h2>
+        <p id="net" class="text-2xl text-blue-600"></p>
+      </div>
+    </div>
+    
+    <!-- Monthly Reports Chart -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Monthly Reports</h2>
+      <canvas id="monthlyChart"></canvas>
+    </div>
+    
+    <!-- Expense & Income By Category Charts -->
+    <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <h2 class="text-2xl font-bold mb-4">Expense By Category</h2>
+        <canvas id="expenseCategoryChart"></canvas>
+      </div>
+      <div>
+        <h2 class="text-2xl font-bold mb-4">Income By Category</h2>
+        <canvas id="incomeCategoryChart"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Eğer kullanıcı basic auth bilgilerine sahip değilse yönlendir.
+    if (!localStorage.getItem('username') || !localStorage.getItem('password')) {
+      window.location.href = 'index.html';
+    }
+    
+    const baseUrl = 'http://localhost';
+    
+    // Basic Auth header oluşturma
+    function getAuthHeaders() {
+      const username = localStorage.getItem('username') || '';
+      const password = localStorage.getItem('password') || '';
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(username + ':' + password)
+      };
+    }
+    
+    // --- Rapor Fonksiyonları ---
+    
+    // Report Summary (Tüm veriler üzerinden)
+    async function loadReportSummary() {
+      try {
+        const res = await fetch(`${baseUrl}/reports/summary`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load report summary');
+        const summary = await res.json();
+        document.getElementById('totalIncome').textContent = summary.totalIncome;
+        document.getElementById('totalExpense').textContent = summary.totalExpense;
+        document.getElementById('net').textContent = summary.net;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    
+    // Monthly Reports (Bar Chart)
+    async function loadMonthlyReports() {
+      try {
+        const res = await fetch(`${baseUrl}/reports/monthly`, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load monthly reports');
+        const data = await res.json();
+        const labels = data.map(item => item.month);
+        const incomeData = data.map(item => item.income);
+        const expenseData = data.map(item => item.expense);
+        
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Income',
+                data: incomeData,
+                backgroundColor: 'rgba(34, 197, 94, 0.6)'
+              },
+              {
+                label: 'Expense',
+                data: expenseData,
+                backgroundColor: 'rgba(239, 68, 68, 0.6)'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    
+    // Expense By Category (default endpoint veya tarih aralığı)
+    async function loadExpenseByCategory(rangeParams = null) {
+      try {
+        let url = `${baseUrl}/reports/expense-by-category`;
+        if (rangeParams) {
+          url = `${baseUrl}/reports/expense-by-category/range?start=${rangeParams.start}&end=${rangeParams.end}`;
+        }
+        const res = await fetch(url, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load expense by category');
+        const data = await res.json();
+        const labels = Object.keys(data);
+        const amounts = Object.values(data);
+        
+        const ctx = document.getElementById('expenseCategoryChart').getContext('2d');
+        // Eğer grafik daha önce oluşturulmuşsa, onu destroy edelim
+        if(window.expenseChart) window.expenseChart.destroy();
+        window.expenseChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: amounts,
+              backgroundColor: labels.map(() => 'rgba(59, 130, 246, 0.6)')
+            }]
+          },
+          options: { responsive: true }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    
+    // Income By Category (default endpoint veya tarih aralığı)
+    async function loadIncomeByCategory(rangeParams = null) {
+      try {
+        let url = `${baseUrl}/reports/income-by-category`;
+        if (rangeParams) {
+          url = `${baseUrl}/reports/income-by-category/range?start=${rangeParams.start}&end=${rangeParams.end}`;
+        }
+        const res = await fetch(url, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Failed to load income by category');
+        const data = await res.json();
+        const labels = Object.keys(data);
+        const amounts = Object.values(data);
+        
+        const ctx = document.getElementById('incomeCategoryChart').getContext('2d');
+        if(window.incomeChart) window.incomeChart.destroy();
+        window.incomeChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: amounts,
+              backgroundColor: labels.map(() => 'rgba(16, 185, 129, 0.6)')
+            }]
+          },
+          options: { responsive: true }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    
+    // --- Filter Form İşlemi ---
+    document.getElementById('filterForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      const filterErrorEl = document.getElementById('filterError');
+      filterErrorEl.textContent = '';
+      
+      if (!start || !end) {
+        filterErrorEl.textContent = 'Please select both start and end dates.';
+        return;
+      }
+      
+      // Tarihleri ISO formatında (örneğin, "2025-03-01T00:00:00")
+      const startISO = new Date(start).toISOString();
+      const endISO = new Date(end).toISOString();
+      
+      const rangeParams = { start: startISO, end: endISO };
+      // Sadece kategori bazlı grafikler için date range sorgusu yapıyoruz.
+      await loadExpenseByCategory(rangeParams);
+      await loadIncomeByCategory(rangeParams);
+    });
+    
+    // --- Sayfa Yüklenince Tüm Raporları Çek ---
+    window.addEventListener('load', () => {
+      loadReportSummary();
+      loadMonthlyReports();
+      // Varsayılan olarak, kategori grafiklerini tüm veriler üzerinden çekelim.
+      loadExpenseByCategory();
+      loadIncomeByCategory();
+    });
+  </script>
+</body>
+</html>
