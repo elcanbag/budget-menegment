@@ -1,5 +1,6 @@
 package com.example.budgetmanager.controller;
 
+import com.example.budgetmanager.dto.IncomeRecordDTO;
 import com.example.budgetmanager.model.IncomeRecord;
 import com.example.budgetmanager.service.IncomeRecordService;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +37,11 @@ public class IncomeRecordController {
 
 
     @PostMapping
-    public ResponseEntity<IncomeRecord> addIncomeRecord(@RequestBody IncomeRecord incomeRecord) {
+    public ResponseEntity<IncomeRecord> addIncomeRecord(@RequestBody IncomeRecordDTO dto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok(incomeRecordService.addRecord(incomeRecord, authentication));
+        return ResponseEntity.ok(incomeRecordService.addRecord(dto, authentication));
     }
+
 
 
     @PutMapping("/{id}")
