@@ -6,7 +6,6 @@ import com.example.budgetmanager.repository.IncomeRecordRepository;
 import com.example.budgetmanager.repository.ExpenseRecordRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 
 @Service
 public class ReportService {
-
     private final IncomeRecordRepository incomeRecordRepository;
     private final ExpenseRecordRepository expenseRecordRepository;
 
@@ -81,13 +79,9 @@ public class ReportService {
         return map;
     }
 
-
     public Map<String, Double> getIncomeByCategory(String username) {
-
         LocalDateTime start = LocalDateTime.of(1970, 1, 1, 0, 0);
         LocalDateTime end = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
         return getIncomeByCategory(username, start, end);
     }
-
-
 }

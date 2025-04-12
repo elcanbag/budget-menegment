@@ -7,6 +7,10 @@ server.port=80
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 
+spring.redis.url=redis://localhost:6379
+
+spring.cache.type=redis
+
 
 spring.datasource.url=jdbc:h2:mem:budgetdb
 spring.datasource.driver-class-name=org.h2.Driver
@@ -20,7 +24,7 @@ springdoc.swagger-ui.enabled=true
 
 
 spring.mail.host=smtp.gmail.com
-spring.mail.port=58
+spring.mail.port=587
 spring.mail.username=elcanbagirov09@gmail.com
 spring.mail.password=feki uwvl fkrb clar
 spring.mail.properties.mail.smtp.auth=true
