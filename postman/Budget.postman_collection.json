@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"fullName\": \"John Doe\",\r\n  \"username\": \"johndoe\",\r\n  \"email\": \"johndoe@example.com\",\r\n  \"password\": \"securepassword\"\r\n}\r\n",
+							"raw": "{\r\n  \"fullName\": \"John Doe\",\r\n  \"username\": \"johndoe\",\r\n  \"email\": \"elcanbaa@proton.me\",\r\n  \"password\": \"securepassword\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -27,15 +27,46 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/auth/signup",
+							"raw": "http://localhost/auth/signup",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
 							"path": [
 								"auth",
 								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify email",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/auth/verify-code?username=johndoe&code=305862",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"verify-code"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "johndoe"
+								},
+								{
+									"key": "code",
+									"value": "305862"
+								}
 							]
 						}
 					},
@@ -59,12 +90,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/auth/login",
+							"raw": "http://localhost/auth/login",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
 							"path": [
 								"auth",
 								"login"
@@ -79,31 +109,202 @@
 			"name": "User Profile",
 			"item": [
 				{
-					"name": "Update Profile",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"newemail@example.com\",\n    \"password\": \"newsecurepassword\"\n}"
+					"name": "Reset Password",
+					"item": [
+						{
+							"name": "Send Reset Request",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/auth/request-reset?email=elcanbaa@proton.me",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"auth",
+										"request-reset"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "elcanbaa@proton.me"
+										}
+									]
+								}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{baseUrl}}/profile/{username}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"profile",
-								"{username}"
-							]
+						{
+							"name": "Verify Token",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/auth/verify-token?token=abc123xyz",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"auth",
+										"verify-token"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "abc123xyz"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "newPassword",
+											"value": "new123456",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/auth/reset-password?token=8717bb25-9901-461d-9acf-c99a939d6f17",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"auth",
+										"reset-password"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "8717bb25-9901-461d-9acf-c99a939d6f17"
+										}
+									]
+								}
+							},
+							"response": []
 						}
+					]
+				},
+				{
+					"name": "Update Profile",
+					"item": [
+						{
+							"name": "Get Datas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/profile/settings",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"profile",
+										"settings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Profile",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Doe Doe\",\n    \"username\": \"doedoe\",\n    \"email\": \"johndoe@example.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost/profile/settings",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"profile",
+										"settings"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
 					},
-					"response": []
+					{
+						"key": "username",
+						"value": "johndoe",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -122,12 +323,11 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/income-categories",
+											"raw": "http://localhost/income-categories",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-categories"
 											]
@@ -150,12 +350,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/income-categories",
+											"raw": "http://localhost/income-categories",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-categories"
 											]
@@ -178,12 +377,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/income-categories/1",
+											"raw": "http://localhost/income-categories/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-categories",
 												"1"
@@ -198,12 +396,11 @@
 										"method": "DELETE",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/income-categories/1",
+											"raw": "http://localhost/income-categories/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-categories",
 												"1"
@@ -224,7 +421,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n  \"amount\": 1500.00,\r\n  \"category\": {\r\n    \"id\": 1\r\n  },\r\n  \"date\": \"2025-02-02T12:00:00\"\r\n}\r\n",
+											"raw": "{\r\n  \"amount\": 100.0,\r\n  \"categoryId\": 1,\r\n  \"date\": \"2025-03-03T23:31:00\"\r\n}\r\n",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -232,12 +429,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/income-records",
+											"raw": "http://localhost/income-records",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-records"
 											]
@@ -251,12 +447,11 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/income-records",
+											"raw": "http://localhost/income-records",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-records"
 											]
@@ -279,12 +474,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/income-records/1",
+											"raw": "http://localhost/income-records/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-records",
 												"1"
@@ -299,12 +493,11 @@
 										"method": "DELETE",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/income-records/1",
+											"raw": "http://localhost/income-records/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"income-records",
 												"1"
@@ -329,12 +522,11 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/expense-categories",
+											"raw": "http://localhost/expense-categories",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-categories"
 											]
@@ -357,12 +549,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/expense-categories",
+											"raw": "http://localhost/expense-categories",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-categories"
 											]
@@ -385,12 +576,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/expense-categories/1",
+											"raw": "http://localhost/expense-categories/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-categories",
 												"1"
@@ -405,12 +595,11 @@
 										"method": "DELETE",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/expense-categories/1",
+											"raw": "http://localhost/expense-categories/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-categories",
 												"1"
@@ -461,12 +650,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/expense-records",
+											"raw": "http://localhost/expense-records",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-records"
 											]
@@ -480,12 +668,11 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/expense-records",
+											"raw": "http://localhost/expense-records",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-records"
 											]
@@ -508,12 +695,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/expense-records/1",
+											"raw": "http://localhost/expense-records/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-records",
 												"1"
@@ -528,12 +714,11 @@
 										"method": "DELETE",
 										"header": [],
 										"url": {
-											"raw": "http://localhost:8080/expense-records/1",
+											"raw": "http://localhost/expense-records/1",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
-											"port": "8080",
 											"path": [
 												"expense-records",
 												"1"
@@ -597,12 +782,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/expense-subcategories",
+									"raw": "http://localhost/expense-subcategories",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-subcategories"
 									]
@@ -616,12 +800,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/expense-subcategories/1",
+									"raw": "http://localhost/expense-subcategories/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-subcategories",
 										"1"
@@ -645,12 +828,11 @@
 									"raw": "{\n    \"name\": \"Taxi\",\n    \"parentCategoryId\": 1\n}\n"
 								},
 								"url": {
-									"raw": "http://localhost:8080/expense-subcategories",
+									"raw": "http://localhost/expense-subcategories",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-subcategories"
 									]
@@ -673,12 +855,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/expense-subcategories/1",
+									"raw": "http://localhost/expense-subcategories/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-subcategories",
 										"1"
@@ -693,12 +874,11 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/expense-subcategories/1",
+									"raw": "http://localhost/expense-subcategories/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-subcategories",
 										"1"
@@ -727,12 +907,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/expense-records",
+									"raw": "http://localhost/expense-records",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-records"
 									]
@@ -746,12 +925,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/expense-records",
+									"raw": "http://localhost/expense-records",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-records"
 									]
@@ -765,12 +943,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/expense-records/1",
+									"raw": "http://localhost/expense-records/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-records",
 										"1"
@@ -794,12 +971,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/expense-records/1",
+									"raw": "http://localhost/expense-records/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-records",
 										"1"
@@ -814,12 +990,11 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/expense-records/1",
+									"raw": "http://localhost/expense-records/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
 									"path": [
 										"expense-records",
 										"1"
@@ -842,6 +1017,632 @@
 					{
 						"key": "password",
 						"value": "securepassword",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Scheduled Transactions",
+			"item": [
+				{
+					"name": "Create Scheduled Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 100.0,\n  \"description\": \"Monthly subscription\",\n  \"categoryId\": 1,\n  \"subCategoryId\": null,\n  \"transactionType\": \"EXPENSE\",\n  \"transactionInterval\": \"MONTHLY\",\n  \"nextExecutionDate\": \"2025-03-27T00:00:00\",\n  \"active\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost/scheduled-transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"scheduled-transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Scheduled Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/scheduled-transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"scheduled-transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Scheduled Transaction by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/scheduled-transactions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"scheduled-transactions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Scheduled Transaction",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150.0,\n  \"description\": \"Updated subscription\",\n  \"categoryId\": 1,\n  \"subCategoryId\": null,\n  \"transactionType\": \"EXPENSE\",\n  \"transactionInterval\": \"MONTHLY\",\n  \"nextExecutionDate\": \"2025-04-27T00:00:00\",\n  \"active\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost/scheduled-transactions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"scheduled-transactions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Scheduled Transaction",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/scheduled-transactions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"scheduled-transactions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Execute Scheduled Transactions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/scheduled-transactions/execute",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"scheduled-transactions",
+								"execute"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "johndoe",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Graph Reports",
+			"item": [
+				{
+					"name": "Get Report Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/reports/summary",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"reports",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Monthly Reports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic <base64-encoded-credentials>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/reports/monthly",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"reports",
+								"monthly"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Expense By Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/reports/expense-by-category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"reports",
+								"expense-by-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Expense via Dates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/reports/expense-by-category/range?start=2025-04-01T00:00:00&end=2025-04-30T23:59:59",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"reports",
+								"expense-by-category",
+								"range"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2025-04-01T00:00:00"
+								},
+								{
+									"key": "end",
+									"value": "2025-04-30T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Income By Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/reports/income-by-category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"reports",
+								"income-by-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Income via Dates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/reports/income-by-category/range?start=2025-03-01T00:00:00&end=2025-03-31T23:59:59",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"reports",
+								"income-by-category",
+								"range"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2025-03-01T00:00:00"
+								},
+								{
+									"key": "end",
+									"value": "2025-03-31T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "username",
+						"value": "johndoe",
+						"type": "string"
+					},
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "GET with Dates",
+			"item": [
+				{
+					"name": "Expense Record",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/expense-records/filter?start=2024-12-01T00:00:00&end=2025-12-31T23:59:59",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"expense-records",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2024-12-01T00:00:00"
+								},
+								{
+									"key": "end",
+									"value": "2025-12-31T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Income Record",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/income-records/filter?start=2024-12-01T00:00:00&end=2025-12-31T23:59:59",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"income-records",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "2024-12-01T00:00:00"
+								},
+								{
+									"key": "end",
+									"value": "2025-12-31T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "johndoe",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Export Data",
+			"item": [
+				{
+					"name": "Expense",
+					"item": [
+						{
+							"name": "Excel file",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/reports/export/expenses/excel",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"reports",
+										"export",
+										"expenses",
+										"excel"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Export PDF",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/reports/export/expenses/pdf",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"reports",
+										"export",
+										"expenses",
+										"pdf"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Income",
+					"item": [
+						{
+							"name": "Excel",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/reports/export/incomes/excel",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"reports",
+										"export",
+										"incomes",
+										"excel"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PDF",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/reports/export/incomes/pdf",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"reports",
+										"export",
+										"incomes",
+										"pdf"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "johndoe",
 						"type": "string"
 					}
 				]
