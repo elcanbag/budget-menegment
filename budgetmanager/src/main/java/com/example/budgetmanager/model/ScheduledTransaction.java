@@ -1,5 +1,6 @@
 package com.example.budgetmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -15,6 +16,11 @@ public class ScheduledTransaction {
     private Long id;
 
     @ManyToOne
+    @JsonIgnoreProperties({
+            "password", "email", "active", "enabled",
+            "accountNonLocked", "authorities",
+            "credentialsNonExpired", "accountNonExpired"
+    })
     private User user;
 
     private Double amount;
