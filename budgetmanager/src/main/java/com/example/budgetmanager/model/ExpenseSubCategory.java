@@ -1,5 +1,6 @@
 package com.example.budgetmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,11 @@ public class ExpenseSubCategory {
     private ExpenseCategory parentCategory;
 
     @ManyToOne
+    @JsonIgnoreProperties({
+            "password", "email", "active", "enabled",
+            "accountNonLocked", "authorities",
+            "credentialsNonExpired", "accountNonExpired"
+    })
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
