@@ -23,7 +23,7 @@ public interface ExpenseRecordRepository extends JpaRepository<ExpenseRecord, Lo
     @Query("select new com.example.budgetmanager.dto.MonthlyReportDTO(" +
             "CONCAT(FUNCTION('YEAR', er.date), '-', FUNCTION('MONTH', er.date)), " +
             "0, sum(er.amount)) " +
-            "from ExpenseRecord er where er.user.username = ?1 group by FUNCTION('YEAR', er.date), FUNCTION('MONTH', er.date)")
+            "from ExpenseRecord er where er.user.username = ?1 group by CONCAT(FUNCTION('YEAR', er.date), '-', FUNCTION('MONTH', er.date))")
     List<MonthlyReportDTO> getMonthlyExpenseByUsername(String username);
 
     @Query("SELECT er.category.name, SUM(er.amount) " +

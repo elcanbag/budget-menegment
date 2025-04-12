@@ -24,9 +24,8 @@ public interface IncomeRecordRepository extends JpaRepository<IncomeRecord, Long
     @Query("select new com.example.budgetmanager.dto.MonthlyReportDTO(" +
             "CONCAT(FUNCTION('YEAR', ir.date), '-', FUNCTION('MONTH', ir.date)), " +
             "sum(ir.amount), 0) " +
-            "from IncomeRecord ir where ir.user.username = ?1 group by CONCAT(FUNCTION('YEAR', ir.date), '-', FUNCTION('MONTH', ir.date))")
+            "from IncomeRecord ir where ir.user.username = ?1 group by FUNCTION('YEAR', ir.date), FUNCTION('MONTH', ir.date)")
     List<MonthlyReportDTO> getMonthlyIncomeByUsername(String username);
-
 
     @Query("SELECT ir.category.name, SUM(ir.amount) " +
             "FROM IncomeRecord ir " +

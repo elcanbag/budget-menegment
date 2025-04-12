@@ -26,10 +26,18 @@ public interface ExpenseRecordRepository extends JpaRepository<ExpenseRecord, Lo
             "from ExpenseRecord er where er.user.username = ?1 group by FUNCTION('YEAR', er.date), FUNCTION('MONTH', er.date)")
     List<MonthlyReportDTO> getMonthlyExpenseByUsername(String username);
 
+
     @Query("SELECT er.category.name, SUM(er.amount) " +
             "FROM ExpenseRecord er " +
             "WHERE er.user.username = :username " +
             "GROUP BY er.category.name")
     List<Object[]> getTotalExpenseGroupedByCategory(String username);
+
+    @Query("SELECT er.category.name, SUM(er.amount) " +
+            "FROM ExpenseRecord er " +
+            "WHERE er.user.username = :username " +
+            "AND er.date BETWEEN :start AND :end " +
+            "GROUP BY er.category.name")
+    List<Object[]> getExpenseByCategoryInDateRange(String username, LocalDateTime start, LocalDateTime end);
 
 }
