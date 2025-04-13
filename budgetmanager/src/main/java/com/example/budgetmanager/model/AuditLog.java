@@ -13,6 +13,9 @@ public class AuditLog {
     private Long id;
     private String username;
     private String action;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String details;
     private LocalDateTime timestamp;
 }
