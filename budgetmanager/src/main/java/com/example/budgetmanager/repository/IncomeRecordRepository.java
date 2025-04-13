@@ -35,4 +35,5 @@ public interface IncomeRecordRepository extends JpaRepository<IncomeRecord, Long
             "GROUP BY ir.category.name")
     List<Object[]> getIncomeByCategoryInDateRange(String username, LocalDateTime start, LocalDateTime end);
 
+    List<IncomeRecord> findByUserAndDateLessThanEqual(User user, LocalDateTime dateTime);
 }

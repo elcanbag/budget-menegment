@@ -2,6 +2,7 @@ package com.example.budgetmanager.repository;
 
 import com.example.budgetmanager.dto.MonthlyReportDTO;
 import com.example.budgetmanager.model.ExpenseRecord;
+import com.example.budgetmanager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,5 @@ public interface ExpenseRecordRepository extends JpaRepository<ExpenseRecord, Lo
             "GROUP BY er.category.name")
     List<Object[]> getExpenseByCategoryInDateRange(String username, LocalDateTime start, LocalDateTime end);
 
+    List<ExpenseRecord> findByUserAndDateLessThanEqual(User user, LocalDateTime dateTime);
 }
