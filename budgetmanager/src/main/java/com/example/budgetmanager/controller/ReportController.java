@@ -6,8 +6,11 @@ import com.example.budgetmanager.model.ExpenseRecord;
 import com.example.budgetmanager.model.IncomeRecord;
 import com.example.budgetmanager.repository.ExpenseRecordRepository;
 import com.example.budgetmanager.repository.IncomeRecordRepository;
+import com.example.budgetmanager.repository.UserRepository;
+import com.example.budgetmanager.service.EmailService;
 import com.example.budgetmanager.service.ReportExportService;
 import com.example.budgetmanager.service.ReportService;
+import jakarta.mail.MessagingException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,12 +32,16 @@ public class ReportController {
     private final ExpenseRecordRepository expenseRecordRepository;
     private final ReportExportService reportExportService;
     private final IncomeRecordRepository incomeRecordRepository;
+    private final EmailService emailService;
+    private final UserRepository userRepository;
 
-    public ReportController(ReportService reportService, ExpenseRecordRepository expenseRecordRepository, ReportExportService reportExportService, IncomeRecordRepository incomeRecordRepository) {
+    public ReportController(ReportService reportService, ExpenseRecordRepository expenseRecordRepository, ReportExportService reportExportService, IncomeRecordRepository incomeRecordRepository, EmailService emailService, UserRepository userRepository) {
         this.reportService = reportService;
         this.expenseRecordRepository = expenseRecordRepository;
         this.reportExportService = reportExportService;
         this.incomeRecordRepository = incomeRecordRepository;
+        this.emailService = emailService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/summary")
@@ -78,10 +85,8 @@ public class ReportController {
         String username = auth.getName();
         List<ExpenseRecord> expenses = expenseRecordRepository.findByUserUsername(username);
         ByteArrayInputStream stream = reportExportService.exportExpensesToExcel(expenses);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=expenses.xlsx");
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
@@ -93,10 +98,8 @@ public class ReportController {
         String username = auth.getName();
         List<ExpenseRecord> expenses = expenseRecordRepository.findByUserUsername(username);
         ByteArrayInputStream stream = reportExportService.exportExpensesToPDF(expenses);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=expenses.pdf");
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
@@ -108,10 +111,8 @@ public class ReportController {
         String username = auth.getName();
         List<IncomeRecord> incomes = incomeRecordRepository.findByUserUsername(username);
         ByteArrayInputStream stream = reportExportService.exportIncomesToPDF(incomes);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=incomes.pdf");
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
@@ -123,14 +124,51 @@ public class ReportController {
         String username = auth.getName();
         List<IncomeRecord> incomes = incomeRecordRepository.findByUserUsername(username);
         ByteArrayInputStream stream = reportExportService.exportIncomesToExcel(incomes);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=incomes.xlsx");
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new InputStreamResource(stream));
     }
 
+    @GetMapping("/email/expenses/pdf")
+    public ResponseEntity<String> emailExpensesPdf(@RequestParam String email, Authentication auth) throws IOException, MessagingException {
+        String username = auth.getName();
+        List<ExpenseRecord> expenses = expenseRecordRepository.findByUserUsername(username);
+        ByteArrayInputStream stream = reportExportService.exportExpensesToPDF(expenses);
+        byte[] data = stream.readAllBytes();
+        emailService.sendEmailWithAttachment(email, "Your Expense Report (PDF)", "Please find attached your expense report in PDF format.", data, "expenses.pdf", "application/pdf");
+        return ResponseEntity.ok("Expense PDF emailed successfully");
+    }
+
+    @GetMapping("/email/expenses/excel")
+    public ResponseEntity<String> emailExpensesExcel(@RequestParam String email, Authentication auth) throws IOException, MessagingException {
+        String username = auth.getName();
+        List<ExpenseRecord> expenses = expenseRecordRepository.findByUserUsername(username);
+        ByteArrayInputStream stream = reportExportService.exportExpensesToExcel(expenses);
+        byte[] data = stream.readAllBytes();
+        emailService.sendEmailWithAttachment(email, "Your Expense Report (Excel)", "Please find attached your expense report in Excel format.", data, "expenses.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        return ResponseEntity.ok("Expense Excel emailed successfully");
+    }
+
+    @GetMapping("/email/incomes/pdf")
+    public ResponseEntity<String> emailIncomesPdf(@RequestParam String email, Authentication auth) throws IOException, MessagingException {
+        String username = auth.getName();
+        List<IncomeRecord> incomes = incomeRecordRepository.findByUserUsername(username);
+        ByteArrayInputStream stream = reportExportService.exportIncomesToPDF(incomes);
+        byte[] data = stream.readAllBytes();
+        emailService.sendEmailWithAttachment(email, "Your Income Report (PDF)", "Please find attached your income report in PDF format.", data, "incomes.pdf", "application/pdf");
+        return ResponseEntity.ok("Income PDF emailed successfully");
+    }
+
+    @GetMapping("/email/incomes/excel")
+    public ResponseEntity<String> emailIncomesExcel(@RequestParam String email, Authentication auth) throws IOException, MessagingException {
+        String username = auth.getName();
+        List<IncomeRecord> incomes = incomeRecordRepository.findByUserUsername(username);
+        ByteArrayInputStream stream = reportExportService.exportIncomesToExcel(incomes);
+        byte[] data = stream.readAllBytes();
+        emailService.sendEmailWithAttachment(email, "Your Income Report (Excel)", "Please find attached your income report in Excel format.", data, "incomes.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        return ResponseEntity.ok("Income Excel emailed successfully");
+    }
 }
