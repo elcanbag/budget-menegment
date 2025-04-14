@@ -59,9 +59,8 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/index.html").permitAll()
                         .requestMatchers("/index.html/**").permitAll()
-                        .requestMatchers("/swagger-ui.html/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
 
-                        .requestMatchers("/swagger-ui//**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpSecurityHttpBasicConfigurer -> {});
