@@ -196,7 +196,7 @@
 									]
 								},
 								"url": {
-									"raw": "http://localhost/auth/reset-password?token=8717bb25-9901-461d-9acf-c99a939d6f17",
+									"raw": "http://localhost/auth/reset-password?token=64a3f5ba-0047-44f9-b225-17823edb79e1",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -208,7 +208,7 @@
 									"query": [
 										{
 											"key": "token",
-											"value": "8717bb25-9901-461d-9acf-c99a939d6f17"
+											"value": "64a3f5ba-0047-44f9-b225-17823edb79e1"
 										}
 									]
 								}
@@ -687,7 +687,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"amount\": 100.0,\r\n    \"description\": \"Petrol for my car\",\r\n    \"categoryId\": 1\r\n}\r\n",
+											"raw": "{\r\n  \"amount\": 120.0,\r\n  \"date\": \"2025-04-13T19:00:00\",\r\n  \"description\": \"Petrol for my car\",\r\n  \"category\": {\r\n    \"id\": 1\r\n  }\r\n}\r\n",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1245,6 +1245,97 @@
 			]
 		},
 		{
+			"name": "Balance",
+			"item": [
+				{
+					"name": "Get Balance until Date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is a number\", function () {",
+									"    var responseBody = pm.response.json();",
+									"    pm.expect(responseBody).to.be.a('number');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcjpwYXNzd29yZA==",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/balance?date=2025-04-10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"balance"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-04-10"
+								}
+							]
+						},
+						"description": "Sends a GET request to retrieve the remaining balance until the specified date (end of day)."
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "johndoe",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "Graph Reports",
 			"item": [
 				{
@@ -1538,96 +1629,224 @@
 			"name": "Export Data",
 			"item": [
 				{
-					"name": "Expense",
+					"name": "File Export",
 					"item": [
 						{
-							"name": "Excel file",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost/reports/export/expenses/excel",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"reports",
-										"export",
-										"expenses",
-										"excel"
-									]
+							"name": "Income",
+							"item": [
+								{
+									"name": "Excel",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/export/incomes/excel",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"export",
+												"incomes",
+												"excel"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "PDF",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/export/incomes/pdf",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"export",
+												"incomes",
+												"pdf"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "Export PDF",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost/reports/export/expenses/pdf",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"reports",
-										"export",
-										"expenses",
-										"pdf"
-									]
+							"name": "Expense",
+							"item": [
+								{
+									"name": "Excel file",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/export/expenses/excel",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"export",
+												"expenses",
+												"excel"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Export PDF",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/export/expenses/pdf",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"export",
+												"expenses",
+												"pdf"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						}
 					]
 				},
 				{
-					"name": "Income",
+					"name": "Export via Email",
 					"item": [
 						{
-							"name": "Excel",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost/reports/export/incomes/excel",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"reports",
-										"export",
-										"incomes",
-										"excel"
-									]
+							"name": "Income",
+							"item": [
+								{
+									"name": "Export PDF",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/email/incomes/pdf?email=elcanbaa@proton.me",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"email",
+												"incomes",
+												"pdf"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "elcanbaa@proton.me"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Export Excel",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/email/incomes/excel?email=elcanbaa@proton.me",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"email",
+												"incomes",
+												"excel"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "elcanbaa@proton.me"
+												}
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "PDF",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost/reports/export/incomes/pdf",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"reports",
-										"export",
-										"incomes",
-										"pdf"
-									]
+							"name": "Expense",
+							"item": [
+								{
+									"name": "Export PDF",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/email/expenses/pdf?email=elcanbaa@proton.me",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"email",
+												"expenses",
+												"pdf"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "elcanbaa@proton.me"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Export Excel",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost/reports/email/expenses/excel?email=elcanbaa@proton.me",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"path": [
+												"reports",
+												"email",
+												"expenses",
+												"excel"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "elcanbaa@proton.me"
+												}
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						}
 					]
 				}
