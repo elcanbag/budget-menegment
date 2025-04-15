@@ -106,209 +106,6 @@
 			]
 		},
 		{
-			"name": "User Profile",
-			"item": [
-				{
-					"name": "Reset Password",
-					"item": [
-						{
-							"name": "Send Reset Request",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "",
-											"value": "",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://localhost/auth/request-reset?email=elcanbaa@proton.me",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"auth",
-										"request-reset"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": "elcanbaa@proton.me"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Verify Token",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost/auth/verify-token?token=abc123xyz",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"auth",
-										"verify-token"
-									],
-									"query": [
-										{
-											"key": "token",
-											"value": "abc123xyz"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reset Password",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "newPassword",
-											"value": "new123456",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "http://localhost/auth/reset-password?token=64a3f5ba-0047-44f9-b225-17823edb79e1",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"auth",
-										"reset-password"
-									],
-									"query": [
-										{
-											"key": "token",
-											"value": "64a3f5ba-0047-44f9-b225-17823edb79e1"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Update Profile",
-					"item": [
-						{
-							"name": "Get Datas",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost/profile/settings",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"profile",
-										"settings"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Update Profile",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"fullName\": \"Doe Doe\",\n    \"username\": \"doedoe\",\n    \"email\": \"johndoe@example.com\"\n}"
-								},
-								"url": {
-									"raw": "http://localhost/profile/settings",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"path": [
-										"profile",
-										"settings"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			],
-			"auth": {
-				"type": "basic",
-				"basic": [
-					{
-						"key": "password",
-						"value": "securepassword",
-						"type": "string"
-					},
-					{
-						"key": "username",
-						"value": "johndoe",
-						"type": "string"
-					}
-				]
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"packages": {},
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
 			"name": "Categories",
 			"item": [
 				{
@@ -1498,6 +1295,209 @@
 					{
 						"key": "password",
 						"value": "securepassword",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User Profile",
+			"item": [
+				{
+					"name": "Reset Password",
+					"item": [
+						{
+							"name": "Send Reset Request",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/auth/request-reset?email=elcanbaa@proton.me",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"auth",
+										"request-reset"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "elcanbaa@proton.me"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Token",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/auth/verify-token?token=abc123xyz",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"auth",
+										"verify-token"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "abc123xyz"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "newPassword",
+											"value": "new123456",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost/auth/reset-password?token=64a3f5ba-0047-44f9-b225-17823edb79e1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"auth",
+										"reset-password"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "64a3f5ba-0047-44f9-b225-17823edb79e1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Update Profile",
+					"item": [
+						{
+							"name": "Get Datas",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/profile/settings",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"profile",
+										"settings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Profile",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"Doe Doe\",\n    \"username\": \"doedoe\",\n    \"email\": \"johndoe@example.com\"\n}"
+								},
+								"url": {
+									"raw": "http://localhost/profile/settings",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"profile",
+										"settings"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "securepassword",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "johndoe",
 						"type": "string"
 					}
 				]
